@@ -164,7 +164,6 @@ export const USERS = [
 ];
 
 // ============ VOTERS ============
-// ============ VOTERS ============
 export const VOTERS = Array.from({ length: 500 }, (_, i) => {
   const firstNames = ['Rahul', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Neha', 'Raj', 'Kavya', 'Arjun', 'Meera', 'Suresh', 'Anita', 'Deepak', 'Sunita', 'Ravi', 'Pooja', 'Kiran', 'Manoj', 'Jyoti', 'Sanjay'];
   const lastNames = ['Kumar', 'Singh', 'Sharma', 'Patel', 'Verma', 'Yadav', 'Gupta', 'Joshi', 'Malik', 'Reddy', 'Sahu', 'Kashyap', 'Chauhan', 'Thakur', 'Rathore'];
@@ -252,14 +251,12 @@ export const DEVELOPMENT_TYPES = [
 ];
 
 // ============ DEVELOPMENT PROJECTS ============
-// ============ DEVELOPMENT PROJECTS ============
 export const DEVELOPMENT_PROJECTS = Array.from({ length: 35 }, (_, i) => {
   const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'];
   const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'];
   const blocks = ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block', 'Raigarh Block', 'Jagdalpur Block', 'Korba Block', 'Rajnandgaon Block'];
   const villages = ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga', 'Kurud', 'Risali', 'Bhatapara', 'Pallari', 'Khairagarh'];
   
-  // Add Delayed status
   const statuses = ['Draft', 'Approved', 'In Progress', 'Completed', 'Closed', 'Delayed'];
   const fundSources = ['Government Fund', 'Personal Fund', 'Mixed'];
   const developmentTypes = DEVELOPMENT_TYPES;
@@ -269,7 +266,6 @@ export const DEVELOPMENT_PROJECTS = Array.from({ length: 35 }, (_, i) => {
   const completed = Math.floor(Math.random() * target);
   const progress = Math.round((completed / target) * 100);
   
-  // Make some projects delayed (index 3, 7, 12, 18, 24, 30)
   const isDelayed = [3, 7, 12, 18, 24, 30].includes(i % 31);
   const status = isDelayed ? 'Delayed' : statuses[i % statuses.length];
   
@@ -771,86 +767,6 @@ export const AUDIT_REPORTS = Array.from({ length: 30 }, (_, i) => {
   };
 });
 
-// ============ HELPER FUNCTIONS ============
-export const getDashboardStats = () => {
-  const totalVoters = VOTERS.length;
-  const activeVoters = VOTERS.filter(v => v.status === 'Active').length;
-  const totalComplaints = COMPLAINTS.length;
-  const openComplaints = COMPLAINTS.filter(c => c.status === 'Open').length;
-  const resolvedComplaints = COMPLAINTS.filter(c => c.status === 'Resolved' || c.status === 'Closed').length;
-  const totalProjects = DEVELOPMENT_PROJECTS.length;
-  const activeProjects = DEVELOPMENT_PROJECTS.filter(p => p.status === 'Active' || p.status === 'In Progress').length;
-  const completedProjects = DEVELOPMENT_PROJECTS.filter(p => p.status === 'Completed').length;
-  const totalSchemes = SCHEMES.length;
-  const activeSchemes = SCHEMES.filter(s => s.status === 'Active').length;
-  const totalBeneficiaries = SCHEMES.reduce((sum, s) => sum + s.beneficiaries, 0);
-  const totalMeetings = MEETINGS.length;
-  const pendingMeetings = MEETINGS.filter(m => m.status === 'Pending').length;
-  const totalFunding = FUNDING.reduce((sum, f) => sum + f.totalAmount, 0);
-  const totalUtilized = FUNDING.reduce((sum, f) => sum + f.utilized, 0);
-  const totalRegistrations = REGISTRATIONS.length;
-  const pendingRegistrations = REGISTRATIONS.filter(r => r.status === 'Pending').length;
-  const totalVolunteers = VOLUNTEERS.length;
-  const pendingVolunteers = VOLUNTEERS.filter(v => v.status === 'Pending').length;
-  const totalSurveys = SURVEY_REPORTS.length;
-  const totalAudits = AUDIT_REPORTS.length;
-  
-  return {
-    totalVoters,
-    activeVoters,
-    totalComplaints,
-    openComplaints,
-    resolvedComplaints,
-    totalProjects,
-    activeProjects,
-    completedProjects,
-    totalSchemes,
-    activeSchemes,
-    totalBeneficiaries,
-    totalMeetings,
-    pendingMeetings,
-    totalFunding,
-    totalUtilized,
-    totalRegistrations,
-    pendingRegistrations,
-    totalVolunteers,
-    pendingVolunteers,
-    totalSurveys,
-    totalAudits
-  };
-};
-
-// Get hierarchy options for filters
-export const getDistricts = () => {
-  return [...new Set(VOTERS.map(v => v.district))].sort();
-};
-
-export const getConstituencies = (district) => {
-  if (!district) return [];
-  return [...new Set(VOTERS.filter(v => v.district === district).map(v => v.constituency))].sort();
-};
-
-export const getBlocks = (district, constituency) => {
-  if (!district || !constituency) return [];
-  return [...new Set(VOTERS.filter(v => v.district === district && v.constituency === constituency).map(v => v.block))].sort();
-};
-
-export const getPanchayats = (district, constituency, block) => {
-  if (!district || !constituency || !block) return [];
-  return [...new Set(VOTERS.filter(v => v.district === district && v.constituency === constituency && v.block === block).map(v => v.panchayat))].sort();
-};
-
-export const getBooths = (district, constituency, block, panchayat) => {
-  if (!district || !constituency || !block || !panchayat) return [];
-  return [...new Set(VOTERS.filter(v => v.district === district && v.constituency === constituency && v.block === block && v.panchayat === panchayat).map(v => v.pollingBooth))].sort();
-};
-
-export const getVillages = (district, constituency, block, panchayat, booth) => {
-  if (!district || !constituency || !block || !panchayat || !booth) return [];
-  return [...new Set(VOTERS.filter(v => v.district === district && v.constituency === constituency && v.block === block && v.panchayat === panchayat && v.pollingBooth === booth).map(v => v.village))].sort();
-};
-
-
 // ============ HIERARCHY HELPER FUNCTIONS ============
 
 // Get all states
@@ -1038,8 +954,6 @@ export const getVillages = (state, district, assembly, block, panchayat, booth) 
   if (!booth) return [];
   return villageMap[booth] || ['Village 1', 'Village 2'];
 };
-
-
 
 // ============ DASHBOARD STATS ============
 export const getDashboardStats = () => {
