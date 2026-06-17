@@ -589,7 +589,7 @@ export const NEWS = [
     publishDate: '2024-06-15',
     source: 'PTI',
     importance: 'High',
-    image: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=600&h=400&fit=crop',
+    image: 'https://indianmasterminds.com/wp-content/uploads/2026/04/cm-sai.jpg',
     summary: 'Chief Minister Vishnu Deo Sai inaugurated a state-of-the-art 100-bed hospital in Raipur, providing advanced healthcare facilities to citizens.',
     district: 'Raipur'
   },
@@ -622,7 +622,7 @@ export const NEWS = [
     publishDate: '2024-06-08',
     source: 'NDTV',
     importance: 'High',
-    image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop',
+    image: 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/202505/raipur-to-host-indias-first-ai-based-data-park-key-details-inside-ai-generated-imagecanva-050155330-16x9_0.jpg?VersionId=HukQteYFFuDcMrrICpsVAoHLgxjpbI2c',
     summary: 'Nava Raipur is set to become India\'s first city with an AI-driven intelligent traffic management system, reducing congestion by 40%.',
     district: 'Raipur'
   }

@@ -1,6 +1,31 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  Building2, 
+  Users, 
+  AlertTriangle, 
+  Calendar, 
+  Landmark, 
+  Wallet, 
+  UserPlus, 
+  UserCheck,
+  ClipboardCheck,
+  FileCheck,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  XCircle,
+  IndianRupee,
+  Plus,
+  Filter,
+  ChevronDown,
+  User,
+  Bell,
+  Settings,
+  LogOut
+} from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -87,37 +112,42 @@ const Dashboard = () => {
   // Get time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return '🌅 शुभ प्रभात';
-    if (hour < 17) return '☀️ शुभ अपराह्न';
-    return '🌙 शुभ संध्या';
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
   };
 
-  // KPI Cards configuration
+  // Sample avatar - you can replace with actual image URL
+  const avatarImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9I7glunkVzaWPJaeMhAzGhmvP4m-A_jsW9h9jOm_5GBHQTWvLnrwbcyWG0iRHyZGshs08D3-eMBiCyxxlcX1xfTLK-755Sz9nW0umvx8&s=10';
+
+  // KPI Cards configuration with highlighted numbers
   const kpiCards = [
     // Development KPIs
     { 
       id: 'dev1',
       label: 'Total Development Projects', 
       value: filteredProjects.length, 
-      icon: '🏗️', 
+      icon: Building2, 
       change: '+12%',
       color: '#b91c1c',
-      category: 'Development'
+      category: 'Development',
+      highlight: true
     },
     { 
       id: 'dev2',
       label: 'In Progress Projects', 
       value: filteredProjects.filter(p => p.status === 'In Progress').length, 
-      icon: '🔄', 
+      icon: TrendingUp, 
       change: '+8%',
       color: '#f59e0b',
-      category: 'Development'
+      category: 'Development',
+      highlight: true
     },
     { 
       id: 'dev3',
       label: 'Active Projects', 
       value: filteredProjects.filter(p => p.status === 'Active' || p.status === 'In Progress').length, 
-      icon: '✅', 
+      icon: CheckCircle, 
       change: '+10%',
       color: '#22c55e',
       category: 'Development'
@@ -126,7 +156,7 @@ const Dashboard = () => {
       id: 'dev4',
       label: 'Completed Projects', 
       value: filteredProjects.filter(p => p.status === 'Completed').length, 
-      icon: '🎯', 
+      icon: ClipboardCheck, 
       change: '+15%',
       color: '#3b82f6',
       category: 'Development'
@@ -135,16 +165,18 @@ const Dashboard = () => {
       id: 'dev5',
       label: 'Delayed Projects', 
       value: filteredProjects.filter(p => p.status === 'Delayed' || (p.status === 'In Progress' && p.progress < 30)).length || Math.floor(filteredProjects.length * 0.15), 
-      icon: '⏰', 
-      change: '🔴 +5%',
+      icon: Clock, 
+      change: '+5%',
       color: '#ef4444',
-      category: 'Development'
+      category: 'Development',
+      highlight: true,
+      highlightColor: '#ef4444'
     },
     { 
       id: 'dev6',
       label: 'Project Completion Rate', 
       value: `${filteredProjects.length > 0 ? Math.round((filteredProjects.filter(p => p.status === 'Completed').length / filteredProjects.length) * 100) : 0}%`, 
-      icon: '📈', 
+      icon: FileCheck, 
       change: '+5%',
       color: '#8b5cf6',
       category: 'Development'
@@ -155,25 +187,29 @@ const Dashboard = () => {
       id: 'budget1',
       label: 'Total Budget Allocated', 
       value: `₹${(filteredProjects.reduce((sum, p) => sum + p.budget, 0) / 10000000).toFixed(1)}Cr`, 
-      icon: '💰', 
+      icon: IndianRupee, 
       change: '+18%',
       color: '#16a34a',
-      category: 'Budget'
+      category: 'Budget',
+      highlight: true,
+      highlightColor: '#16a34a'
     },
     { 
       id: 'budget2',
       label: 'Utilized Budget', 
       value: `₹${(filteredProjects.reduce((sum, p) => sum + p.allocated, 0) / 10000000).toFixed(1)}Cr`, 
-      icon: '📊', 
+      icon: Wallet, 
       change: '+12%',
       color: '#2563eb',
-      category: 'Budget'
+      category: 'Budget',
+      highlight: true,
+      highlightColor: '#2563eb'
     },
     { 
       id: 'budget3',
       label: 'Budget Utilization', 
       value: `${filteredProjects.length > 0 ? Math.round((filteredProjects.reduce((sum, p) => sum + p.allocated, 0) / filteredProjects.reduce((sum, p) => sum + p.budget, 0)) * 100) : 0}%`, 
-      icon: '📈', 
+      icon: TrendingUp, 
       change: '+8%',
       color: '#8b5cf6',
       category: 'Budget'
@@ -184,16 +220,18 @@ const Dashboard = () => {
       id: 'voter1',
       label: 'Total Voters', 
       value: filteredVoters.length.toLocaleString(), 
-      icon: '👥', 
+      icon: Users, 
       change: '+5.2%',
       color: '#2563eb',
-      category: 'Voters'
+      category: 'Voters',
+      highlight: true,
+      highlightColor: '#2563eb'
     },
     { 
       id: 'voter2',
       label: 'Active Voters', 
       value: filteredVoters.filter(v => v.status === 'Active').length.toLocaleString(), 
-      icon: '✅', 
+      icon: CheckCircle, 
       change: '+3.8%',
       color: '#16a34a',
       category: 'Voters'
@@ -202,8 +240,8 @@ const Dashboard = () => {
       id: 'voter3',
       label: 'Voter Registration (Pending)', 
       value: filteredRegistrations.filter(r => r.status === 'Pending').length, 
-      icon: '📝', 
-      change: '🔴 New',
+      icon: UserPlus, 
+      change: 'New',
       color: '#f59e0b',
       category: 'Voters'
     },
@@ -213,7 +251,7 @@ const Dashboard = () => {
       id: 'comp1',
       label: 'Total Complaints', 
       value: filteredComplaints.length, 
-      icon: '⚠️', 
+      icon: AlertTriangle, 
       change: '+12%',
       color: '#ef4444',
       category: 'Complaints'
@@ -222,7 +260,7 @@ const Dashboard = () => {
       id: 'comp2',
       label: 'Open Complaints', 
       value: filteredComplaints.filter(c => c.status === 'Open').length, 
-      icon: '🔴', 
+      icon: XCircle, 
       change: '+8%',
       color: '#dc2626',
       category: 'Complaints'
@@ -231,7 +269,7 @@ const Dashboard = () => {
       id: 'comp3',
       label: 'Resolved Complaints', 
       value: filteredComplaints.filter(c => c.status === 'Resolved' || c.status === 'Closed').length, 
-      icon: '✅', 
+      icon: CheckCircle, 
       change: '+15%',
       color: '#22c55e',
       category: 'Complaints'
@@ -242,7 +280,7 @@ const Dashboard = () => {
       id: 'meet1',
       label: 'Total Meetings', 
       value: filteredMeetings.length, 
-      icon: '📅', 
+      icon: Calendar, 
       change: '+10%',
       color: '#8b5cf6',
       category: 'Meetings'
@@ -251,8 +289,8 @@ const Dashboard = () => {
       id: 'meet2',
       label: 'Pending Meetings', 
       value: filteredMeetings.filter(m => m.status === 'Pending').length, 
-      icon: '⏳', 
-      change: '🔴 New',
+      icon: Clock, 
+      change: 'New',
       color: '#f59e0b',
       category: 'Meetings'
     },
@@ -260,18 +298,20 @@ const Dashboard = () => {
     // Schemes KPIs
     { 
       id: 'sch1',
-      label: 'Total Schemes (Yojnas)', 
+      label: 'Total Schemes', 
       value: filteredSchemes.length, 
-      icon: '🏛️', 
+      icon: Landmark, 
       change: '+18%',
       color: '#1e40af',
-      category: 'Schemes'
+      category: 'Schemes',
+      highlight: true,
+      highlightColor: '#1e40af'
     },
     { 
       id: 'sch2',
       label: 'Active Schemes', 
       value: filteredSchemes.filter(s => s.status === 'Active').length, 
-      icon: '✅', 
+      icon: CheckCircle, 
       change: '+10%',
       color: '#16a34a',
       category: 'Schemes'
@@ -280,10 +320,12 @@ const Dashboard = () => {
       id: 'sch3',
       label: 'Total Beneficiaries', 
       value: filteredSchemes.reduce((sum, s) => sum + s.beneficiaries, 0).toLocaleString(), 
-      icon: '👤', 
+      icon: Users, 
       change: '+25%',
       color: '#9333ea',
-      category: 'Schemes'
+      category: 'Schemes',
+      highlight: true,
+      highlightColor: '#9333ea'
     },
 
     // Funding KPIs
@@ -291,7 +333,7 @@ const Dashboard = () => {
       id: 'fund1',
       label: 'Total Funding', 
       value: `₹${(filteredFunding.reduce((sum, f) => sum + f.totalAmount, 0) / 10000000).toFixed(1)}Cr`, 
-      icon: '💰', 
+      icon: Wallet, 
       change: '+22%',
       color: '#16a34a',
       category: 'Funding'
@@ -300,7 +342,7 @@ const Dashboard = () => {
       id: 'fund2',
       label: 'Fund Utilization', 
       value: `${filteredFunding.length > 0 ? Math.round((filteredFunding.reduce((sum, f) => sum + f.utilized, 0) / filteredFunding.reduce((sum, f) => sum + f.totalAmount, 0)) * 100) : 0}%`, 
-      icon: '📊', 
+      icon: TrendingUp, 
       change: '+8%',
       color: '#8b5cf6',
       category: 'Funding'
@@ -311,7 +353,7 @@ const Dashboard = () => {
       id: 'vol1',
       label: 'Total Volunteers', 
       value: filteredVolunteers.length, 
-      icon: '🤝', 
+      icon: UserCheck, 
       change: '+15%',
       color: '#7c3aed',
       category: 'Volunteers'
@@ -320,8 +362,8 @@ const Dashboard = () => {
       id: 'vol2',
       label: 'Pending Volunteers', 
       value: filteredVolunteers.filter(v => v.status === 'Pending').length, 
-      icon: '⏳', 
-      change: '🔴 New',
+      icon: Clock, 
+      change: 'New',
       color: '#f59e0b',
       category: 'Volunteers'
     },
@@ -331,7 +373,7 @@ const Dashboard = () => {
       id: 'surv1',
       label: 'Total Surveys', 
       value: SURVEY_REPORTS.length, 
-      icon: '🔍', 
+      icon: ClipboardCheck, 
       change: '+10%',
       color: '#06b6d4',
       category: 'Survey'
@@ -340,7 +382,7 @@ const Dashboard = () => {
       id: 'aud1',
       label: 'Total Audits', 
       value: AUDIT_REPORTS.length, 
-      icon: '📋', 
+      icon: FileCheck, 
       change: '+8%',
       color: '#6366f1',
       category: 'Audit'
@@ -349,8 +391,8 @@ const Dashboard = () => {
       id: 'aud2',
       label: 'Pending Audits', 
       value: AUDIT_REPORTS.filter(a => a.status === 'Pending').length, 
-      icon: '⏳', 
-      change: '🔴 New',
+      icon: Clock, 
+      change: 'New',
       color: '#ef4444',
       category: 'Audit'
     }
@@ -364,13 +406,16 @@ const Dashboard = () => {
   }, {});
 
   const quickActions = [
-    { icon: '🏗️', label: 'New Development', path: '/development', color: '#b91c1c' },
-    { icon: '📝', label: 'New Complaint', path: '/complaints', color: '#ef4444' },
-    { icon: '🎤', label: 'Schedule Jan Sabha', path: '/jansabha', color: '#8b5cf6' },
-    { icon: '💰', label: 'Create Funding', path: '/funding', color: '#16a34a' },
-    { icon: '📋', label: 'Register Voter', path: '/registration', color: '#2563eb' },
-    { icon: '🤝', label: 'Add Volunteer', path: '/volunteers', color: '#7c3aed' },
+    { icon: Building2, label: 'New Development', path: '/development', color: '#b91c1c' },
+    { icon: AlertTriangle, label: 'New Complaint', path: '/complaints', color: '#ef4444' },
+    { icon: Calendar, label: 'Schedule Jan Sabha', path: '/jansabha', color: '#8b5cf6' },
+    { icon: Wallet, label: 'Create Funding', path: '/funding', color: '#16a34a' },
+    { icon: UserPlus, label: 'Register Voter', path: '/registration', color: '#2563eb' },
+    { icon: UserCheck, label: 'Add Volunteer', path: '/volunteers', color: '#7c3aed' },
   ];
+
+  // Sample banner image - you can replace with actual image URL
+  const bannerImage = 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&h=300&fit=crop&crop=center';
 
   return (
     <LayoutWrapper>
@@ -379,82 +424,175 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Welcome Banner with Namaste in Hindi */}
+        {/* Professional Banner with Avatar and Highlighted Numbers */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
-          borderRadius: '1rem',
-          padding: '1.5rem 2rem',
+          borderRadius: '0.75rem',
           marginBottom: '1.5rem',
-          color: 'white',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem'
+          overflow: 'hidden',
+          position: 'relative',
+          background: '#f0f0f0',
+          minHeight: '180px'
         }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '2rem' }}>🙏</span>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>
-                नमस्ते {user?.name?.split(' ')[0]}!
-              </h1>
-              <span style={{ 
-                fontSize: '0.85rem', 
-                background: 'rgba(255,255,255,0.2)', 
-                padding: '0.2rem 0.8rem', 
-                borderRadius: '9999px',
-                fontWeight: '500'
-              }}>
-                {getGreeting()}
-              </span>
-            </div>
-            <p style={{ opacity: 0.9, marginTop: '0.25rem', fontSize: '0.95rem' }}>
-              {user?.role} · {user?.region} {user?.department && `· ${user.department} Department`}
-            </p>
-            <p style={{ 
-              opacity: 0.8, 
-              marginTop: '0.25rem', 
-              fontSize: '0.85rem',
+          {/* Banner Image */}
+          <div style={{
+            width: '100%',
+            height: '100%',
+            minHeight: '180px',
+            backgroundImage: `url(${bannerImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            position: 'relative'
+          }}>
+            {/* Overlay */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, rgba(185, 28, 28, 0.88) 0%, rgba(99, 16, 16, 0.78) 100%)',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              justifyContent: 'space-between',
+              padding: '1.5rem 2rem',
               flexWrap: 'wrap'
             }}>
-              <span>🇮🇳 भारत</span>
-              {selectedState && <span>· {selectedState}</span>}
-              {selectedDistrict && <span>· {selectedDistrict}</span>}
-              {selectedAssembly && <span>· {selectedAssembly}</span>}
-              <span style={{ 
-                width: '4px', 
-                height: '4px', 
-                borderRadius: '50%', 
-                background: 'rgba(255,255,255,0.5)' 
-              }} />
-              <span>🕉️ सबका साथ, सबका विकास</span>
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-              🏗️ {stats.totalProjects} Projects
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-              🔄 {DEVELOPMENT_PROJECTS.filter(p => p.status === 'In Progress').length} In Progress
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-              ⏰ {DEVELOPMENT_PROJECTS.filter(p => p.status === 'Delayed' || (p.status === 'In Progress' && p.progress < 30)).length} Delayed
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-              👥 {stats.totalVoters.toLocaleString()} Voters
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-              🏛️ {stats.totalSchemes} Schemes
-            </span>
+              {/* Left Side - Greeting and Info */}
+              <div style={{ color: 'white', flex: 1, minWidth: '280px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>
+                    Namaste {user?.name?.split(' ')[0]} Ji
+                  </h1>
+                  <span style={{ 
+                    fontSize: '0.8rem', 
+                    background: 'rgba(255,255,255,0.15)', 
+                    padding: '0.25rem 1rem', 
+                    borderRadius: '9999px',
+                    fontWeight: '500',
+                    border: '1px solid rgba(255,255,255,0.1)'
+                  }}>
+                    {getGreeting()}
+                  </span>
+                </div>
+                <p style={{ opacity: 0.9, marginTop: '0.25rem', fontSize: '0.95rem' }}>
+                  {user?.role} · {user?.region} {user?.department && `· ${user.department} Department`}
+                </p>
+                
+                {/* Highlighted Stats */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '1.5rem', 
+                  marginTop: '0.75rem', 
+                  flexWrap: 'wrap'
+                }}>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.12)', 
+                    padding: '0.3rem 0.8rem', 
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255,255,255,0.08)'
+                  }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{stats.totalProjects}</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.3rem' }}>Projects</span>
+                  </div>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.12)', 
+                    padding: '0.3rem 0.8rem', 
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255,255,255,0.08)'
+                  }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fcd34d' }}>
+                      {DEVELOPMENT_PROJECTS.filter(p => p.status === 'In Progress').length}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.3rem' }}>In Progress</span>
+                  </div>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.12)', 
+                    padding: '0.3rem 0.8rem', 
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255,255,255,0.08)'
+                  }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fca5a5' }}>
+                      {DEVELOPMENT_PROJECTS.filter(p => p.status === 'Delayed' || (p.status === 'In Progress' && p.progress < 30)).length}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.3rem' }}>Delayed</span>
+                  </div>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.12)', 
+                    padding: '0.3rem 0.8rem', 
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255,255,255,0.08)'
+                  }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{stats.totalVoters.toLocaleString()}</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.3rem' }}>Voters</span>
+                  </div>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.12)', 
+                    padding: '0.3rem 0.8rem', 
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255,255,255,0.08)'
+                  }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{stats.totalSchemes}</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.3rem' }}>Schemes</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Avatar Placeholder */}
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <div style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  border: '3px solid rgba(255,255,255,0.3)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                  background: '#991b1b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <img 
+                    src={avatarImage} 
+                    alt={user?.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      imagePosition: 'center',
+                      transition: 'transform 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = `<span style="font-size: 2rem; color: white; font-weight: bold;">${user?.name?.charAt(0) || 'U'}</span>`;
+                    }}
+                  />
+                </div>
+                <span style={{ 
+                  color: 'white', 
+                  fontSize: '0.7rem', 
+                  opacity: 0.8,
+                  background: 'rgba(0,0,0,0.2)',
+                  padding: '0.15rem 0.6rem',
+                  borderRadius: '9999px'
+                }}>
+                  {user?.role}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Full Hierarchy Filters */}
         <div className="filter-group" style={{ flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-          <span style={{ fontWeight: '600', color: '#404040', fontSize: '0.85rem', marginRight: '0.25rem' }}>📍 Hierarchy:</span>
+          <span style={{ fontWeight: '600', color: '#404040', fontSize: '0.85rem', marginRight: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <Filter size={16} /> Hierarchy:
+          </span>
           
           <select 
             value={selectedState} 
@@ -467,7 +605,7 @@ const Dashboard = () => {
               setSelectedBooth(''); 
               setSelectedVillage('');
             }}
-            style={{ minWidth: '130px' }}
+            style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All States</option>
             {states.map(s => <option key={s} value={s}>{s}</option>)}
@@ -484,7 +622,7 @@ const Dashboard = () => {
               setSelectedVillage('');
             }} 
             disabled={!selectedState}
-            style={{ minWidth: '130px' }}
+            style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Districts</option>
             {districts.map(d => <option key={d} value={d}>{d}</option>)}
@@ -500,7 +638,7 @@ const Dashboard = () => {
               setSelectedVillage('');
             }} 
             disabled={!selectedDistrict}
-            style={{ minWidth: '140px' }}
+            style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Assembly Constituencies</option>
             {assemblies.map(a => <option key={a} value={a}>{a}</option>)}
@@ -515,7 +653,7 @@ const Dashboard = () => {
               setSelectedVillage('');
             }} 
             disabled={!selectedAssembly}
-            style={{ minWidth: '130px' }}
+            style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Blocks</option>
             {blocks.map(b => <option key={b} value={b}>{b}</option>)}
@@ -529,7 +667,7 @@ const Dashboard = () => {
               setSelectedVillage('');
             }} 
             disabled={!selectedBlock}
-            style={{ minWidth: '140px' }}
+            style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Panchayats</option>
             {panchayats.map(p => <option key={p} value={p}>{p}</option>)}
@@ -542,7 +680,7 @@ const Dashboard = () => {
               setSelectedVillage('');
             }} 
             disabled={!selectedPanchayat}
-            style={{ minWidth: '130px' }}
+            style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Polling Booths</option>
             {booths.map(b => <option key={b} value={b}>{b}</option>)}
@@ -552,15 +690,15 @@ const Dashboard = () => {
             value={selectedVillage} 
             onChange={(e) => setSelectedVillage(e.target.value)} 
             disabled={!selectedBooth}
-            style={{ minWidth: '130px' }}
+            style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All Villages</option>
             {villages.map(v => <option key={v} value={v}>{v}</option>)}
           </select>
 
           {hasActiveFilters && (
-            <button onClick={clearFilters} className="btn-outline btn-sm">
-              Clear All
+            <button onClick={clearFilters} className="btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <XCircle size={14} /> Clear All
             </button>
           )}
         </div>
@@ -569,7 +707,7 @@ const Dashboard = () => {
         {hasActiveFilters && (
           <div style={{ 
             marginBottom: '1.5rem', 
-            padding: '0.5rem 1rem', 
+            padding: '0.6rem 1rem', 
             background: '#fef2f2', 
             borderRadius: '0.5rem',
             border: '1px solid #fecaca',
@@ -587,28 +725,29 @@ const Dashboard = () => {
             {selectedPanchayat && <span className="status-badge status-active">{selectedPanchayat}</span>}
             {selectedBooth && <span className="status-badge status-scheduled">{selectedBooth}</span>}
             {selectedVillage && <span className="status-badge status-completed">{selectedVillage}</span>}
-            <span style={{ marginLeft: 'auto', color: '#737373' }}>
+            <span style={{ marginLeft: 'auto', color: '#737373', fontSize: '0.8rem' }}>
               Showing filtered data across all KPIs
             </span>
           </div>
         )}
 
-        {/* KPI Cards by Category */}
+        {/* KPI Cards by Category with Highlighted Numbers */}
         {Object.entries(groupedKPIs).map(([category, kpis]) => (
           <div key={category} style={{ marginBottom: '1.5rem' }}>
             <h3 style={{ 
-              fontSize: '1.1rem', 
-              fontWeight: 'bold', 
+              fontSize: '1rem', 
+              fontWeight: '600', 
               marginBottom: '0.75rem', 
               color: '#1a1a1a',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              gap: '0.5rem',
+              letterSpacing: '0.3px'
             }}>
               <span style={{ 
                 display: 'inline-block', 
-                width: '4px', 
-                height: '20px', 
+                width: '3px', 
+                height: '18px', 
                 background: category === 'Budget' ? '#16a34a' : '#b91c1c', 
                 borderRadius: '2px' 
               }} />
@@ -617,75 +756,110 @@ const Dashboard = () => {
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '1rem' 
+              gap: '0.75rem' 
             }}>
-              {kpis.map((kpi, i) => (
-                <motion.div
-                  key={kpi.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.03 }}
-                  whileHover={{ y: -4, boxShadow: '0 10px 30px rgba(185, 28, 28, 0.08)' }}
-                  style={{
-                    background: 'white',
-                    padding: '1.25rem',
-                    borderRadius: '0.75rem',
-                    border: `1px solid ${kpi.color}20`,
-                    transition: 'all 0.3s',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => {
-                    const pageMap = {
-                      'Development': '/development',
-                      'Budget': '/development',
-                      'Voters': '/voters',
-                      'Complaints': '/complaints',
-                      'Meetings': '/meetings',
-                      'Schemes': '/schemes',
-                      'Funding': '/funding',
-                      'Volunteers': '/volunteers',
-                      'Survey': '/development',
-                      'Audit': '/development'
-                    };
-                    if (pageMap[category]) navigate(pageMap[category]);
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '1.5rem' }}>{kpi.icon}</span>
-                    <span style={{ 
-                      fontSize: '0.65rem', 
-                      color: kpi.change.includes('🔴') ? '#ef4444' : '#22c55e',
-                      fontWeight: '600',
-                      background: kpi.change.includes('🔴') ? '#fef2f2' : '#dcfce7',
-                      padding: '0.2rem 0.5rem',
-                      borderRadius: '9999px'
-                    }}>
-                      {kpi.change}
-                    </span>
-                  </div>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1a1a1a', marginTop: '0.5rem' }}>
-                    {kpi.value}
-                  </p>
-                  <p style={{ fontSize: '0.8rem', color: '#737373' }}>{kpi.label}</p>
-                  {kpi.id === 'dev5' && kpi.value > 0 && (
-                    <div style={{ marginTop: '0.3rem', display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.55rem', color: '#ef4444', background: '#fee2e2', padding: '0.15rem 0.4rem', borderRadius: '9999px' }}>
-                        ⚠️ Action Required
+              {kpis.map((kpi, i) => {
+                const IconComponent = kpi.icon;
+                const isHighlighted = kpi.highlight || false;
+                const highlightColor = kpi.highlightColor || kpi.color;
+                
+                return (
+                  <motion.div
+                    key={kpi.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.03 }}
+                    whileHover={{ y: -3, boxShadow: '0 8px 25px rgba(0,0,0,0.08)' }}
+                    style={{
+                      background: 'white',
+                      padding: '1rem 1.25rem',
+                      borderRadius: '0.5rem',
+                      border: `1px solid ${isHighlighted ? highlightColor : kpi.color}15`,
+                      transition: 'all 0.3s',
+                      cursor: 'pointer',
+                      position: 'relative'
+                    }}
+                    onClick={() => {
+                      const pageMap = {
+                        'Development': '/development',
+                        'Budget': '/development',
+                        'Voters': '/voters',
+                        'Complaints': '/complaints',
+                        'Meetings': '/meetings',
+                        'Schemes': '/schemes',
+                        'Funding': '/funding',
+                        'Volunteers': '/volunteers',
+                        'Survey': '/development',
+                        'Audit': '/development'
+                      };
+                      if (pageMap[category]) navigate(pageMap[category]);
+                    }}
+                  >
+                    {isHighlighted && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: '3px',
+                        background: highlightColor,
+                        borderRadius: '0.5rem 0.5rem 0 0'
+                      }} />
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ 
+                        width: '36px', 
+                        height: '36px', 
+                        borderRadius: '0.5rem', 
+                        background: `${kpi.color}15`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <IconComponent size={18} color={kpi.color} />
+                      </div>
+                      <span style={{ 
+                        fontSize: '0.65rem', 
+                        color: kpi.change.includes('New') ? '#ef4444' : '#22c55e',
+                        fontWeight: '600',
+                        background: kpi.change.includes('New') ? '#fef2f2' : '#dcfce7',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '9999px'
+                      }}>
+                        {kpi.change}
                       </span>
                     </div>
-                  )}
-                  {kpi.id === 'budget3' && (
-                    <div style={{ marginTop: '0.5rem', height: '3px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div style={{ 
-                        width: `${kpi.value.replace('%', '')}%`, 
-                        height: '100%', 
-                        background: parseInt(kpi.value) > 70 ? '#22c55e' : parseInt(kpi.value) > 40 ? '#f59e0b' : '#ef4444',
-                        borderRadius: '9999px'
-                      }} />
-                    </div>
-                  )}
-                </motion.div>
-              ))}
+                    <p style={{ 
+                      fontSize: isHighlighted ? '1.5rem' : '1.25rem', 
+                      fontWeight: isHighlighted ? '700' : '600', 
+                      color: isHighlighted ? highlightColor : '#1a1a1a', 
+                      marginTop: '0.5rem',
+                      textShadow: isHighlighted ? '0 0 30px rgba(0,0,0,0.05)' : 'none'
+                    }}>
+                      {kpi.value}
+                    </p>
+                    <p style={{ fontSize: '0.8rem', color: '#737373', fontWeight: '400' }}>{kpi.label}</p>
+                    {kpi.id === 'dev5' && kpi.value > 0 && (
+                      <div style={{ marginTop: '0.3rem' }}>
+                        <span style={{ fontSize: '0.55rem', color: '#ef4444', background: '#fee2e2', padding: '0.15rem 0.4rem', borderRadius: '9999px', fontWeight: '500' }}>
+                          ⚠️ Action Required
+                        </span>
+                      </div>
+                    )}
+                    {kpi.id === 'budget3' && (
+                      <div style={{ marginTop: '0.5rem', height: '3px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
+                        <div style={{ 
+                          width: `${kpi.value.replace('%', '')}%`, 
+                          height: '100%', 
+                          background: parseInt(kpi.value) > 70 ? '#22c55e' : parseInt(kpi.value) > 40 ? '#f59e0b' : '#ef4444',
+                          borderRadius: '9999px',
+                          transition: 'width 0.8s ease'
+                        }} />
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -693,23 +867,23 @@ const Dashboard = () => {
         {/* Quick Actions */}
         <div style={{ marginTop: '1.5rem' }}>
           <h3 style={{ 
-            fontSize: '1.1rem', 
-            fontWeight: 'bold', 
+            fontSize: '1rem', 
+            fontWeight: '600', 
             marginBottom: '0.75rem', 
             color: '#1a1a1a',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem'
+            gap: '0.5rem',
+            letterSpacing: '0.3px'
           }}>
             <span style={{ 
               display: 'inline-block', 
-              width: '4px', 
-              height: '20px', 
+              width: '3px', 
+              height: '18px', 
               background: '#b91c1c', 
               borderRadius: '2px' 
             }} />
-            ⚡ Quick Actions
-          </h3>
+            Quick Actions          </h3>
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', 
@@ -719,45 +893,49 @@ const Dashboard = () => {
             borderRadius: '0.75rem',
             border: '1px solid #f0f0f0'
           }}>
-            {quickActions.map((action, i) => (
-              <motion.button
-                key={i}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate(action.path)}
-                style={{
-                  padding: '0.75rem',
-                  background: 'white',
-                  border: `1px solid ${action.color}20`,
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '0.3rem',
-                  transition: 'all 0.3s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = action.color;
-                  e.currentTarget.style.boxShadow = `0 4px 15px ${action.color}20`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = `${action.color}20`;
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                <span style={{ fontSize: '1.5rem' }}>{action.icon}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: '500', color: '#404040' }}>{action.label}</span>
-              </motion.button>
-            ))}
+            {quickActions.map((action, i) => {
+              const IconComponent = action.icon;
+              return (
+                <motion.button
+                  key={i}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate(action.path)}
+                  style={{
+                    padding: '0.75rem 0.5rem',
+                    background: 'white',
+                    border: `1px solid ${action.color}20`,
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = action.color;
+                    e.currentTarget.style.boxShadow = `0 4px 15px ${action.color}20`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = `${action.color}20`;
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <IconComponent size={20} color={action.color} />
+                  <span style={{ fontSize: '0.75rem', fontWeight: '500', color: '#404040' }}>{action.label}</span>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
 
         {/* Recent Activity */}
         <div style={{ marginTop: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           <div style={{ background: 'white', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #f0f0f0' }}>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1a1a1a' }}>
-              🏗️ Recent Development Projects
+            <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '1rem', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Building2 size={16} color="#b91c1c" />
+              Recent Development Projects
             </h4>
             {getFilteredData(DEVELOPMENT_PROJECTS).slice(0, 5).map((project) => (
               <div key={project.id} style={{ padding: '0.6rem 0', borderBottom: '1px solid #f5f5f5' }}>
@@ -782,8 +960,9 @@ const Dashboard = () => {
           </div>
 
           <div style={{ background: 'white', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #f0f0f0' }}>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1a1a1a' }}>
-              ⚠️ Recent Complaints
+            <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '1rem', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <AlertTriangle size={16} color="#ef4444" />
+              Recent Complaints
             </h4>
             {getFilteredData(COMPLAINTS).slice(0, 5).map((complaint) => (
               <div key={complaint.id} style={{ padding: '0.6rem 0', borderBottom: '1px solid #f5f5f5' }}>
@@ -806,12 +985,12 @@ const Dashboard = () => {
         <div style={{ 
           marginTop: '1.5rem', 
           textAlign: 'center', 
-          padding: '1rem',
+          padding: '1rem 0',
           color: '#737373',
-          fontSize: '0.85rem',
+          fontSize: '0.8rem',
           borderTop: '1px solid #f0f0f0'
         }}>
-          🙏 जय जवान, जय किसान, जय विज्ञान, जय अनुसंधान · Development for All · 🇮🇳
+          Development Project Monitoring System · Chhattisgarh · All Rights Reserved
         </div>
       </motion.div>
     </LayoutWrapper>
