@@ -2,12 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import { canAccessPage } from '../../api/data';
 
 const Sidebar = () => {
   const location = useLocation();
   const { logout, user } = useAuth();
 
-  const menuItems = [
+  const allMenuItems = [
     { path: '/dashboard', icon: '📊', label: 'Dashboard' },
     { path: '/development', icon: '🏗️', label: 'Development' },
     { path: '/voters', icon: '👥', label: 'Voter List' },
@@ -21,6 +22,12 @@ const Sidebar = () => {
     { path: '/volunteers', icon: '🤝', label: 'Volunteers' },
     { path: '/funding', icon: '💰', label: 'Funding' },
   ];
+
+  // Filter menu items based on user role
+  const menuItems = allMenuItems.filter(item => {
+    const page = item.path.replace('/', '');
+    return canAccessPage(user, page);
+  });
 
   return (
     <motion.div

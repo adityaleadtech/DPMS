@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { UserPlus, Search, Filter, XCircle, Users, CheckCircle, XCircle as XIcon } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
 import { REGISTRATIONS } from '../api/data';
+import { canAccessPage } from '../api/data';
 import { useAuth } from '../context/AuthContext';
 
 const Registration = () => {
-  const { isCM, isMinister } = useAuth();
+  const { user, isCM, isMinister } = useAuth();
   const canApprove = isCM || isMinister;
   
   const [filter, setFilter] = useState('All');
@@ -14,6 +16,28 @@ const Registration = () => {
   const [selectedReg, setSelectedReg] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [registrations, setRegistrations] = useState(REGISTRATIONS);
+
+  // Check if user can access registrations
+  if (!canAccessPage(user, 'registrations')) {
+    return (
+      <LayoutWrapper>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '4rem', 
+          background: 'white', 
+          borderRadius: '0.75rem', 
+          border: '1px solid #f0f0f0' 
+        }}>
+          <UserPlus size={48} color="#737373" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.5rem', color: '#b91c1c', marginTop: '1rem' }}>Access Denied</h2>
+          <p style={{ color: '#737373' }}>You don't have permission to view registrations.</p>
+          <p style={{ color: '#737373', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+            Please contact your administrator for access.
+          </p>
+        </div>
+      </LayoutWrapper>
+    );
+  }
 
   const statuses = ['All', 'Pending', 'Approved', 'Rejected'];
   const districts = [...new Set(REGISTRATIONS.map(r => r.district))];
@@ -57,7 +81,7 @@ const Registration = () => {
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, minWidth: '150px' }}
+            style={{ flex: 1, minWidth: '150px', padding: '0.5rem 1rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', outline: 'none' }}
           />
           <select value={filter} onChange={(e) => setFilter(e.target.value)}>
             {statuses.map(s => <option key={s} value={s}>{s}</option>)}

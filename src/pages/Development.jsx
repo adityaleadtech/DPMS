@@ -19,10 +19,22 @@ import {
   BarChart3,
   PieChart,
   Target,
-  Award
+  Award,
+  FileText,
+  Download,
+  Printer,
+  Edit,
+  Save,
+  X
 } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
-import { DEVELOPMENT_PROJECTS } from '../api/data';
+import { 
+  DEVELOPMENT_PROJECTS, 
+  DEVELOPMENT_TYPES,
+  canAccessPage, 
+  canWrite 
+} from '../api/data';
+import { useAuth } from '../context/AuthContext';
 import { 
   getStates,
   getDistricts,
@@ -33,7 +45,7 @@ import {
   getVillages
 } from '../api/data';
 
-// Simple chart components using pure CSS/SVG
+// Progress Chart Component
 const ProgressChart = ({ progress, delayed }) => {
   const circumference = 2 * Math.PI * 45;
   const offset = circumference - (progress / 100) * circumference;
@@ -42,34 +54,10 @@ const ProgressChart = ({ progress, delayed }) => {
   return (
     <div style={{ position: 'relative', width: '140px', height: '140px' }}>
       <svg width="140" height="140" viewBox="0 0 120 120">
-        <circle
-          cx="60"
-          cy="60"
-          r="45"
-          fill="none"
-          stroke="#f0f0f0"
-          strokeWidth="10"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="45"
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform="rotate(-90 60 60)"
-        />
+        <circle cx="60" cy="60" r="45" fill="none" stroke="#f0f0f0" strokeWidth="10" />
+        <circle cx="60" cy="60" r="45" fill="none" stroke={color} strokeWidth="10" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 60 60)" />
       </svg>
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center'
-      }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
         <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1a1a1a' }}>{progress}%</div>
         <div style={{ fontSize: '10px', color: '#737373' }}>Complete</div>
       </div>
@@ -77,153 +65,662 @@ const ProgressChart = ({ progress, delayed }) => {
   );
 };
 
-const MilestoneChart = ({ milestones }) => {
-  const total = milestones.length;
-  const completed = milestones.filter(m => m.completed).length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-  
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: '500', color: '#1a1a1a' }}>
-          Milestone Progress
-        </span>
-        <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#b91c1c' }}>
-          {completed}/{total} Done
-        </span>
-      </div>
-      <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8 }}
-          style={{ 
-            height: '100%', 
-            background: percentage > 70 ? '#22c55e' : percentage > 40 ? '#f59e0b' : '#b91c1c',
-            borderRadius: '9999px'
-          }} 
-        />
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem', fontSize: '0.7rem', color: '#737373' }}>
-        <span>0%</span>
-        <span>50%</span>
-        <span>100%</span>
-      </div>
-    </div>
-  );
-};
+// Report Modal Component
+const ReportModal = ({ isOpen, onClose, projects }) => {
+  if (!isOpen) return null;
 
-const BudgetChart = ({ allocated, budget }) => {
-  const percentage = budget > 0 ? Math.round((allocated / budget) * 100) : 0;
-  const remaining = budget - allocated;
+  const totalProjects = projects.length;
+  const completed = projects.filter(p => p.status === 'Completed').length;
+  const inProgress = projects.filter(p => p.status === 'In Progress').length;
+  const active = projects.filter(p => p.status === 'Active').length;
+  const delayed = projects.filter(p => p.status === 'Delayed').length;
+  const draft = projects.filter(p => p.status === 'Draft').length;
   
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: '500', color: '#1a1a1a' }}>
-          Budget Utilization
-        </span>
-        <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#2563eb' }}>
-          {percentage}%
-        </span>
-      </div>
-      <div style={{ height: '20px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden', position: 'relative' }}>
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8 }}
-          style={{ 
-            height: '100%', 
-            background: percentage > 70 ? '#22c55e' : percentage > 40 ? '#f59e0b' : '#ef4444',
-            borderRadius: '9999px',
-            position: 'relative'
-          }} 
-        />
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontSize: '0.7rem',
-          fontWeight: '600',
-          color: percentage > 50 ? 'white' : '#404040'
-        }}>
-          ₹{(allocated / 100000).toFixed(1)}L / ₹{(budget / 100000).toFixed(1)}L
-        </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem', fontSize: '0.7rem', color: '#737373' }}>
-        <span>Allocated: ₹{(allocated / 100000).toFixed(1)}L</span>
-        <span>Remaining: ₹{(remaining / 100000).toFixed(1)}L</span>
-      </div>
-    </div>
-  );
-};
+  const completionRate = totalProjects > 0 ? Math.round((completed / totalProjects) * 100) : 0;
+  const avgProgress = totalProjects > 0 ? Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / totalProjects) : 0;
+  
+  const topProjects = [...projects].sort((a, b) => b.progress - a.progress).slice(0, 5);
+  
+  const districtData = {};
+  projects.forEach(p => {
+    if (!districtData[p.district]) districtData[p.district] = 0;
+    districtData[p.district]++;
+  });
+  const topDistricts = Object.entries(districtData).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  
+  const monthlyData = [
+    { month: 'Jan', value: 45 },
+    { month: 'Feb', value: 52 },
+    { month: 'Mar', value: 48 },
+    { month: 'Apr', value: 63 },
+    { month: 'May', value: 71 },
+    { month: 'Jun', value: 68 },
+    { month: 'Jul', value: 82 },
+    { month: 'Aug', value: 78 },
+    { month: 'Sep', value: 85 },
+    { month: 'Oct', value: 90 },
+    { month: 'Nov', value: 87 },
+    { month: 'Dec', value: 93 },
+  ];
 
-const StatusTimeline = ({ project }) => {
-  const statuses = ['Draft', 'Approved', 'In Progress', 'Completed'];
-  const currentIndex = statuses.indexOf(project.status);
-  
+  const maxValue = Math.max(...monthlyData.map(d => d.value));
+
   return (
-    <div style={{ padding: '0.5rem 0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
-        {statuses.map((status, index) => (
-          <div key={status} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: index <= currentIndex ? '#b91c1c' : '#f0f0f0',
-              color: index <= currentIndex ? 'white' : '#737373',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.7rem',
-              fontWeight: '600',
-              zIndex: 2,
-              border: index === currentIndex ? '3px solid #b91c1c' : 'none'
-            }}>
-              {index <= currentIndex ? '✓' : index + 1}
-            </div>
-            <span style={{ 
-              fontSize: '0.6rem', 
-              color: index <= currentIndex ? '#b91c1c' : '#737373',
-              marginTop: '0.25rem',
-              fontWeight: index === currentIndex ? '600' : '400',
-              textAlign: 'center'
-            }}>
-              {status}
-            </span>
+    <div className="modal-overlay" style={{ zIndex: 2000 }}>
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="modal-content"
+        style={{ maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto', padding: '2rem' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText size={22} color="#b91c1c" />
+              Development Report
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#737373' }}>Comprehensive overview of all development projects</p>
           </div>
-        ))}
-        <div style={{
-          position: 'absolute',
-          top: '16px',
-          left: '10%',
-          right: '10%',
-          height: '3px',
-          background: '#f0f0f0',
-          zIndex: 0
-        }}>
-          <div style={{
-            width: `${(currentIndex / (statuses.length - 1)) * 100}%`,
-            height: '100%',
-            background: '#b91c1c',
-            transition: 'width 0.8s ease'
-          }} />
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button className="btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Download size={14} /> Export
+            </button>
+            <button className="btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Printer size={14} /> Print
+            </button>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
+          </div>
         </div>
-      </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#b91c1c' }}>{totalProjects}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Total Projects</div>
+          </div>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#22c55e' }}>{completed}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Completed</div>
+          </div>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f59e0b' }}>{inProgress}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>In Progress</div>
+          </div>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>{delayed}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Delayed</div>
+          </div>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>{completionRate}%</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Completion Rate</div>
+          </div>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#8b5cf6' }}>{avgProgress}%</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Avg Progress</div>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+            <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
+              <PieChart size={16} style={{ display: 'inline', marginRight: '0.3rem' }} />
+              Project Status Distribution
+            </h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ flex: 1 }}>
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                  {(() => {
+                    const total = totalProjects || 1;
+                    const data = [
+                      { value: completed, color: '#22c55e', label: 'Completed' },
+                      { value: inProgress, color: '#f59e0b', label: 'In Progress' },
+                      { value: active, color: '#3b82f6', label: 'Active' },
+                      { value: delayed, color: '#ef4444', label: 'Delayed' },
+                      { value: draft, color: '#8b5cf6', label: 'Draft' }
+                    ].filter(d => d.value > 0);
+                    
+                    let currentAngle = -90;
+                    const slices = data.map(d => {
+                      const percentage = (d.value / total) * 100;
+                      const angle = (percentage / 100) * 360;
+                      const startAngle = currentAngle;
+                      currentAngle += angle;
+                      
+                      const startRad = (startAngle * Math.PI) / 180;
+                      const endRad = (currentAngle * Math.PI) / 180;
+                      
+                      const x1 = 60 + 45 * Math.cos(startRad);
+                      const y1 = 60 + 45 * Math.sin(startRad);
+                      const x2 = 60 + 45 * Math.cos(endRad);
+                      const y2 = 60 + 45 * Math.sin(endRad);
+                      
+                      return { path: `M 60 60 L ${x1} ${y1} A 45 45 0 ${angle > 180 ? 1 : 0} 1 ${x2} ${y2} Z`, color: d.color };
+                    });
+                    
+                    return slices.map((slice, i) => <path key={i} d={slice.path} fill={slice.color} />);
+                  })()}
+                  <circle cx="60" cy="60" r="20" fill="white" />
+                </svg>
+              </div>
+              <div style={{ flex: 1 }}>
+                {[
+                  { label: 'Completed', value: completed, color: '#22c55e' },
+                  { label: 'In Progress', value: inProgress, color: '#f59e0b' },
+                  { label: 'Active', value: active, color: '#3b82f6' },
+                  { label: 'Delayed', value: delayed, color: '#ef4444' },
+                  { label: 'Draft', value: draft, color: '#8b5cf6' }
+                ].filter(d => d.value > 0).map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: item.color }} />
+                    <span style={{ color: '#404040' }}>{item.label}:</span>
+                    <span style={{ fontWeight: '600', color: '#1a1a1a' }}>{item.value}</span>
+                    <span style={{ color: '#737373', fontSize: '0.65rem' }}>
+                      ({totalProjects > 0 ? Math.round((item.value / totalProjects) * 100) : 0}%)
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+            <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
+              <TrendingUp size={16} style={{ display: 'inline', marginRight: '0.3rem' }} />
+              Monthly Progress Trend
+            </h4>
+            <div style={{ height: '100px', position: 'relative' }}>
+              <svg width="100%" height="100" style={{ overflow: 'visible' }}>
+                {[0, 25, 50, 75, 100].map((pos) => (
+                  <line key={pos} x1="0" y1={100 - (pos / 100) * 85} x2="100%" y2={100 - (pos / 100) * 85} stroke="#e5e5e5" strokeWidth="0.5" strokeDasharray="4,4" />
+                ))}
+                
+                {monthlyData.map((d, i) => {
+                  const x = (i / (monthlyData.length - 1)) * 100;
+                  const y = 100 - (d.value / maxValue) * 85;
+                  return (
+                    <circle key={i} cx={`${x}%`} cy={y} r="3" fill="#b91c1c" stroke="white" strokeWidth="1.5" />
+                  );
+                })}
+                
+                <polyline
+                  points={monthlyData.map((d, i) => `${(i / (monthlyData.length - 1)) * 100},${100 - (d.value / maxValue) * 85}`).join(' ')}
+                  fill="none"
+                  stroke="#b91c1c"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                
+                <polygon
+                  points={`0,100 ${monthlyData.map((d, i) => `${(i / (monthlyData.length - 1)) * 100},${100 - (d.value / maxValue) * 85}`).join(' ')} 100,100`}
+                  fill="rgba(185, 28, 28, 0.08)"
+                />
+              </svg>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.5rem', color: '#737373', marginTop: '0.25rem' }}>
+              {monthlyData.map((d, i) => (
+                <span key={i}>{d.month}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
+            <Award size={16} style={{ display: 'inline', marginRight: '0.3rem' }} />
+            Top 5 Projects by Progress
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            {topProjects.map((project, i) => (
+              <div key={project.id} style={{ background: '#fafafa', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <span style={{ fontSize: '0.7rem', fontWeight: '600', color: '#b91c1c' }}>#{i + 1}</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: '500', marginLeft: '0.3rem' }}>{project.name}</span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: '600', color: project.progress > 70 ? '#22c55e' : project.progress > 40 ? '#f59e0b' : '#ef4444' }}>
+                    {project.progress}%
+                  </span>
+                </div>
+                <div style={{ height: '4px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden', marginTop: '0.25rem' }}>
+                  <div style={{ width: `${project.progress}%`, height: '100%', background: project.progress > 70 ? '#22c55e' : project.progress > 40 ? '#f59e0b' : '#ef4444', borderRadius: '9999px' }} />
+                </div>
+                <div style={{ fontSize: '0.6rem', color: '#737373', marginTop: '0.25rem' }}>
+                  {project.district} · {project.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
+            <MapPin size={16} style={{ display: 'inline', marginRight: '0.3rem' }} />
+            Top 5 Districts by Projects
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            {topDistricts.map(([district, count], i) => {
+              const percentage = totalProjects > 0 ? Math.round((count / totalProjects) * 100) : 0;
+              return (
+                <div key={district} style={{ background: '#fafafa', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.85rem' }}>{district}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#b91c1c' }}>{count} ({percentage}%)</span>
+                  </div>
+                  <div style={{ height: '4px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden', marginTop: '0.25rem' }}>
+                    <div style={{ width: `${percentage}%`, height: '100%', background: '#b91c1c', borderRadius: '9999px' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// Create Project Modal
+const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    type: '',
+    description: '',
+    state: '',
+    district: '',
+    constituency: '',
+    block: '',
+    panchayat: '',
+    village: '',
+    budget: '',
+    startDate: '',
+    expectedCompletion: '',
+    fundSource: 'Government Fund'
+  });
+
+  const [errors, setErrors] = useState({});
+  const states = getStates();
+  const districts = getDistricts(formData.state);
+  const constituencies = getAssemblyConstituencies(formData.state, formData.district);
+  const blocks = getBlocks(formData.state, formData.district, formData.constituency);
+  const panchayats = getPanchayats(formData.state, formData.district, formData.constituency, formData.block);
+  const villages = getVillages(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat, 'Booth 101');
+
+  // DEVELOPMENT_TYPES is imported from data.js
+  const developmentTypes = DEVELOPMENT_TYPES;
+
+  const handleSubmit = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = 'Project name is required';
+    if (!formData.type) newErrors.type = 'Project type is required';
+    if (!formData.state) newErrors.state = 'State is required';
+    if (!formData.district) newErrors.district = 'District is required';
+    if (!formData.budget) newErrors.budget = 'Budget is required';
+    if (!formData.startDate) newErrors.startDate = 'Start date is required';
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const newProject = {
+      id: `DEV${String(100 + DEVELOPMENT_PROJECTS.length + 1).padStart(3, '0')}`,
+      name: formData.name,
+      type: formData.type,
+      description: formData.description || `Development of ${formData.type.toLowerCase()} in ${formData.village || 'selected area'}`,
+      state: formData.state,
+      district: formData.district,
+      constituency: formData.constituency || 'Not Specified',
+      block: formData.block || 'Not Specified',
+      panchayat: formData.panchayat || 'Not Specified',
+      village: formData.village || 'Not Specified',
+      pollingBooth: 'Booth 101',
+      status: 'Draft',
+      progress: 0,
+      target: 100,
+      completed: 0,
+      budget: parseFloat(formData.budget) || 0,
+      allocated: 0,
+      fundSource: formData.fundSource,
+      governmentFund: 0,
+      personalFund: 0,
+      startDate: formData.startDate,
+      expectedCompletion: formData.expectedCompletion || '2025-12-31',
+      createdBy: 'Ram Vichar Netam',
+      createdDate: new Date().toISOString().split('T')[0],
+      images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop'],
+      milestones: [
+        { name: 'Survey Completed', completed: false, date: formData.startDate },
+        { name: 'Foundation Laid', completed: false, date: formData.startDate },
+        { name: 'Construction Started', completed: false, date: formData.startDate },
+        { name: 'Final Inspection', completed: false, date: formData.expectedCompletion || '2025-12-31' }
+      ]
+    };
+
+    DEVELOPMENT_PROJECTS.push(newProject);
+    
+    if (onProjectCreated) onProjectCreated();
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" style={{ zIndex: 2000 }}>
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="modal-content"
+        style={{ maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto', padding: '2rem' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Plus size={22} color="#b91c1c" />
+              Create New Development Project
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#737373' }}>Fill in the details to create a new project</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Project Name <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              placeholder="Enter project name"
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.name ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', outline: 'none' }}
+            />
+            {errors.name && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.name}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Project Type <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <select
+              value={formData.type}
+              onChange={(e) => setFormData({...formData, type: e.target.value})}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.type ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Type</option>
+              {developmentTypes.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            {errors.type && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.type}</span>}
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Description</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              placeholder="Brief description of the project"
+              rows="2"
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', outline: 'none', resize: 'vertical' }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              State <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <select
+              value={formData.state}
+              onChange={(e) => setFormData({...formData, state: e.target.value, district: '', constituency: '', block: '', panchayat: '', village: ''})}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.state ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select State</option>
+              {states.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            {errors.state && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.state}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              District <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <select
+              value={formData.district}
+              onChange={(e) => setFormData({...formData, district: e.target.value, constituency: '', block: '', panchayat: '', village: ''})}
+              disabled={!formData.state}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.district ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select District</option>
+              {districts.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            {errors.district && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.district}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Constituency</label>
+            <select
+              value={formData.constituency}
+              onChange={(e) => setFormData({...formData, constituency: e.target.value, block: '', panchayat: '', village: ''})}
+              disabled={!formData.district}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Constituency</option>
+              {constituencies.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Block</label>
+            <select
+              value={formData.block}
+              onChange={(e) => setFormData({...formData, block: e.target.value, panchayat: '', village: ''})}
+              disabled={!formData.constituency}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Block</option>
+              {blocks.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Panchayat</label>
+            <select
+              value={formData.panchayat}
+              onChange={(e) => setFormData({...formData, panchayat: e.target.value, village: ''})}
+              disabled={!formData.block}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Panchayat</option>
+              {panchayats.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Village</label>
+            <select
+              value={formData.village}
+              onChange={(e) => setFormData({...formData, village: e.target.value})}
+              disabled={!formData.panchayat}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Village</option>
+              {villages.map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Budget (₹) <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <input
+              type="number"
+              value={formData.budget}
+              onChange={(e) => setFormData({...formData, budget: e.target.value})}
+              placeholder="Enter budget amount"
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.budget ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', outline: 'none' }}
+            />
+            {errors.budget && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.budget}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Fund Source</label>
+            <select
+              value={formData.fundSource}
+              onChange={(e) => setFormData({...formData, fundSource: e.target.value})}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="Government Fund">Government Fund</option>
+              <option value="Personal Fund">Personal Fund</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Start Date <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <input
+              type="date"
+              value={formData.startDate}
+              onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.startDate ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', outline: 'none' }}
+            />
+            {errors.startDate && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.startDate}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Expected Completion</label>
+            <input
+              type="date"
+              value={formData.expectedCompletion}
+              onChange={(e) => setFormData({...formData, expectedCompletion: e.target.value})}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', outline: 'none' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', borderTop: '1px solid #f0f0f0', paddingTop: '1rem' }}>
+          <button className="btn-primary" onClick={handleSubmit} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <Plus size={18} /> Create Project
+          </button>
+          <button className="btn-outline" onClick={onClose} style={{ flex: 1 }}>Cancel</button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// Update Progress Modal
+const UpdateProgressModal = ({ isOpen, onClose, project, onUpdate }) => {
+  const [progress, setProgress] = useState(project?.progress || 0);
+  const [status, setStatus] = useState(project?.status || 'Draft');
+  const [notes, setNotes] = useState('');
+
+  if (!isOpen || !project) return null;
+
+  const statuses = ['Draft', 'Approved', 'In Progress', 'Completed', 'Closed', 'Delayed'];
+
+  const handleUpdate = () => {
+    if (onUpdate) {
+      onUpdate({
+        ...project,
+        progress: parseInt(progress),
+        status: status,
+        notes: notes
+      });
+    }
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay" style={{ zIndex: 2000 }}>
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="modal-content"
+        style={{ maxWidth: '500px', padding: '2rem' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Edit size={22} color="#b91c1c" />
+              Update Progress
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#737373' }}>{project?.name}</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
+        </div>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <ProgressChart progress={progress} delayed={status === 'Delayed'} />
+          </div>
+          
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Progress (%)
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={(e) => setProgress(parseInt(e.target.value))}
+              style={{ width: '100%' }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#737373' }}>
+              <span>0%</span>
+              <span style={{ fontWeight: 'bold', color: '#b91c1c' }}>{progress}%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Notes</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add notes about the progress update..."
+              rows="3"
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', outline: 'none', resize: 'vertical' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn-primary" onClick={handleUpdate} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <Save size={18} /> Update
+          </button>
+          <button className="btn-outline" onClick={onClose} style={{ flex: 1 }}>Cancel</button>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
 const Development = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [projects, setProjects] = useState(DEVELOPMENT_PROJECTS);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [projectToUpdate, setProjectToUpdate] = useState(null);
   
-  // Hierarchy filter states
   const [selectedState, setSelectedState] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedAssembly, setSelectedAssembly] = useState('');
@@ -232,7 +729,9 @@ const Development = () => {
   const [selectedBooth, setSelectedBooth] = useState('');
   const [selectedVillage, setSelectedVillage] = useState('');
 
-  // Get hierarchy options
+  const canUpdate = canWrite(user);
+  const isUser = user?.role === 'USER';
+
   const states = getStates();
   const districts = getDistricts(selectedState);
   const assemblies = getAssemblyConstituencies(selectedState, selectedDistrict);
@@ -243,20 +742,17 @@ const Development = () => {
 
   const statuses = ['All', 'Active', 'In Progress', 'Upcoming', 'Completed', 'Delayed', 'Draft', 'Approved', 'Closed'];
 
-  // Filter projects based on all criteria
-  const filteredProjects = DEVELOPMENT_PROJECTS.filter(project => {
+  const filteredProjects = projects.filter(project => {
     let match = true;
-    
     if (search && !project.name.toLowerCase().includes(search.toLowerCase())) match = false;
     if (filterStatus !== 'All' && project.status !== filterStatus) match = false;
     if (selectedState && project.state !== selectedState) match = false;
     if (selectedDistrict && project.district !== selectedDistrict) match = false;
-    if (selectedAssembly && project.assemblyConstituency !== selectedAssembly) match = false;
+    if (selectedAssembly && project.constituency !== selectedAssembly) match = false;
     if (selectedBlock && project.block !== selectedBlock) match = false;
     if (selectedPanchayat && project.panchayat !== selectedPanchayat) match = false;
     if (selectedBooth && project.pollingBooth !== selectedBooth) match = false;
     if (selectedVillage && project.village !== selectedVillage) match = false;
-    
     return match;
   });
 
@@ -288,12 +784,10 @@ const Development = () => {
     return colors[status] || 'status-pending';
   };
 
-  // Calculate project stats for modal
   const getProjectStats = (project) => {
     const totalMilestones = project.milestones?.length || 0;
     const completedMilestones = project.milestones?.filter(m => m.completed).length || 0;
     const milestoneProgress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
-    
     return {
       totalMilestones,
       completedMilestones,
@@ -303,6 +797,21 @@ const Development = () => {
     };
   };
 
+  const handleProjectUpdate = (updatedProject) => {
+    const index = projects.findIndex(p => p.id === updatedProject.id);
+    if (index !== -1) {
+      const newProjects = [...projects];
+      newProjects[index] = updatedProject;
+      setProjects(newProjects);
+      const origIndex = DEVELOPMENT_PROJECTS.findIndex(p => p.id === updatedProject.id);
+      if (origIndex !== -1) {
+        DEVELOPMENT_PROJECTS[origIndex] = updatedProject;
+      }
+    }
+    setShowUpdateModal(false);
+    setProjectToUpdate(null);
+  };
+
   return (
     <LayoutWrapper>
       <motion.div
@@ -310,7 +819,6 @@ const Development = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Header */}
         <div style={{ 
           marginBottom: '1.5rem', 
           display: 'flex', 
@@ -324,18 +832,29 @@ const Development = () => {
               Development Projects
             </h2>
             <p style={{ color: '#737373' }}>
-              Track and manage development projects across the state
+              {isUser ? 'View development projects across the state' : 'Track and manage development projects across the state'}
             </p>
           </div>
-          <button 
-            className="btn-primary" 
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <Plus size={18} /> Create New Project
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button 
+              className="btn-outline" 
+              onClick={() => setShowReportModal(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <FileText size={18} /> Reports
+            </button>
+            {!isUser && (
+              <button 
+                className="btn-primary" 
+                onClick={() => setShowCreateModal(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                <Plus size={18} /> Create New Project
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Search and Basic Filters */}
         <div className="filter-group" style={{ flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: '200px', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'white', border: '1px solid #e5e5e5', borderRadius: '0.5rem', padding: '0 0.75rem' }}>
             <Search size={18} color="#737373" />
@@ -344,23 +863,9 @@ const Development = () => {
               placeholder="Search projects by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ 
-                flex: 1, 
-                padding: '0.5rem 0', 
-                border: 'none', 
-                outline: 'none', 
-                fontSize: '0.9rem',
-                background: 'transparent'
-              }}
+              style={{ flex: 1, padding: '0.5rem 0', border: 'none', outline: 'none', fontSize: '0.9rem', background: 'transparent' }}
             />
-            {search && (
-              <XCircle 
-                size={16} 
-                color="#737373" 
-                style={{ cursor: 'pointer' }}
-                onClick={() => setSearch('')}
-              />
-            )}
+            {search && <XCircle size={16} color="#737373" style={{ cursor: 'pointer' }} onClick={() => setSearch('')} />}
           </div>
           
           <select 
@@ -378,7 +883,6 @@ const Development = () => {
           )}
         </div>
 
-        {/* Full Hierarchy Filters */}
         <div className="filter-group" style={{ flexWrap: 'wrap', marginTop: '0.5rem' }}>
           <span style={{ fontWeight: '600', color: '#404040', fontSize: '0.85rem', marginRight: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <MapPin size={16} /> Location:
@@ -386,15 +890,7 @@ const Development = () => {
 
           <select 
             value={selectedState} 
-            onChange={(e) => { 
-              setSelectedState(e.target.value); 
-              setSelectedDistrict(''); 
-              setSelectedAssembly(''); 
-              setSelectedBlock(''); 
-              setSelectedPanchayat(''); 
-              setSelectedBooth(''); 
-              setSelectedVillage('');
-            }}
+            onChange={(e) => { setSelectedState(e.target.value); setSelectedDistrict(''); setSelectedAssembly(''); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
             <option value="">All States</option>
@@ -403,14 +899,7 @@ const Development = () => {
 
           <select 
             value={selectedDistrict} 
-            onChange={(e) => { 
-              setSelectedDistrict(e.target.value); 
-              setSelectedAssembly(''); 
-              setSelectedBlock(''); 
-              setSelectedPanchayat(''); 
-              setSelectedBooth(''); 
-              setSelectedVillage('');
-            }} 
+            onChange={(e) => { setSelectedDistrict(e.target.value); setSelectedAssembly(''); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
             disabled={!selectedState}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
@@ -420,28 +909,17 @@ const Development = () => {
 
           <select 
             value={selectedAssembly} 
-            onChange={(e) => { 
-              setSelectedAssembly(e.target.value); 
-              setSelectedBlock(''); 
-              setSelectedPanchayat(''); 
-              setSelectedBooth(''); 
-              setSelectedVillage('');
-            }} 
+            onChange={(e) => { setSelectedAssembly(e.target.value); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
             disabled={!selectedDistrict}
             style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Assembly Constituencies</option>
+            <option value="">All Constituencies</option>
             {assemblies.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
 
           <select 
             value={selectedBlock} 
-            onChange={(e) => { 
-              setSelectedBlock(e.target.value); 
-              setSelectedPanchayat(''); 
-              setSelectedBooth(''); 
-              setSelectedVillage('');
-            }} 
+            onChange={(e) => { setSelectedBlock(e.target.value); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
             disabled={!selectedAssembly}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
@@ -451,11 +929,7 @@ const Development = () => {
 
           <select 
             value={selectedPanchayat} 
-            onChange={(e) => { 
-              setSelectedPanchayat(e.target.value); 
-              setSelectedBooth(''); 
-              setSelectedVillage('');
-            }} 
+            onChange={(e) => { setSelectedPanchayat(e.target.value); setSelectedBooth(''); setSelectedVillage(''); }}
             disabled={!selectedBlock}
             style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
@@ -465,10 +939,7 @@ const Development = () => {
 
           <select 
             value={selectedBooth} 
-            onChange={(e) => { 
-              setSelectedBooth(e.target.value); 
-              setSelectedVillage('');
-            }} 
+            onChange={(e) => { setSelectedBooth(e.target.value); setSelectedVillage(''); }}
             disabled={!selectedPanchayat}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
@@ -478,7 +949,7 @@ const Development = () => {
 
           <select 
             value={selectedVillage} 
-            onChange={(e) => setSelectedVillage(e.target.value)} 
+            onChange={(e) => setSelectedVillage(e.target.value)}
             disabled={!selectedBooth}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
@@ -487,26 +958,13 @@ const Development = () => {
           </select>
         </div>
 
-        {/* Results Count */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '1rem',
-          flexWrap: 'wrap',
-          gap: '0.5rem'
-        }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <p style={{ fontSize: '0.85rem', color: '#737373' }}>
-            Showing {filteredProjects.length} of {DEVELOPMENT_PROJECTS.length} projects
+            Showing {filteredProjects.length} of {projects.length} projects
           </p>
         </div>
 
-        {/* Projects Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', 
-          gap: '1.25rem' 
-        }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
           {filteredProjects.map((project, i) => (
             <motion.div
               key={project.id}
@@ -514,20 +972,9 @@ const Development = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.03 }}
               whileHover={{ y: -4, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-              style={{ 
-                background: 'white', 
-                borderRadius: '0.75rem', 
-                border: `1px solid ${project.status === 'Delayed' ? '#ef444430' : '#f0f0f0'}`,
-                overflow: 'hidden',
-                transition: 'all 0.3s'
-              }}
+              style={{ background: 'white', borderRadius: '0.75rem', border: `1px solid ${project.status === 'Delayed' ? '#ef444430' : '#f0f0f0'}`, overflow: 'hidden', transition: 'all 0.3s' }}
             >
-              <div style={{ 
-                padding: '1.25rem 1.25rem 0.75rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'start'
-              }}>
+              <div style={{ padding: '1.25rem 1.25rem 0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                 <div>
                   <h4 style={{ fontWeight: '600', fontSize: '1rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>
                     {project.name}
@@ -547,27 +994,17 @@ const Development = () => {
                 </p>
               </div>
 
-              <div style={{ 
-                padding: '0 1.25rem 0.75rem',
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.5rem',
-                fontSize: '0.75rem',
-                color: '#737373'
-              }}>
+              <div style={{ padding: '0 1.25rem 0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.75rem', color: '#737373' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <MapPin size={14} /> {project.district}
+                  <MapPin size={14} /> {project.state || 'Chhattisgarh'}
                 </span>
+                <span>·</span>
+                <span>{project.district}</span>
                 <span>·</span>
                 <span>{project.constituency}</span>
                 <span>·</span>
                 <span>{project.block}</span>
-                {project.village && (
-                  <>
-                    <span>·</span>
-                    <span>{project.village}</span>
-                  </>
-                )}
+                {project.village && <><span>·</span><span>{project.village}</span></>}
               </div>
 
               <div style={{ padding: '0 1.25rem 0.75rem' }}>
@@ -580,182 +1017,97 @@ const Development = () => {
                     initial={{ width: 0 }}
                     animate={{ width: `${project.progress}%` }}
                     transition={{ duration: 0.8 }}
-                    style={{ 
-                      height: '100%', 
-                      background: project.status === 'Delayed' ? '#ef4444' : 
-                                 project.progress > 70 ? '#22c55e' : 
-                                 project.progress > 40 ? '#f59e0b' : '#b91c1c',
-                      borderRadius: '9999px'
-                    }} 
+                    style={{ height: '100%', background: project.status === 'Delayed' ? '#ef4444' : project.progress > 70 ? '#22c55e' : project.progress > 40 ? '#f59e0b' : '#b91c1c', borderRadius: '9999px' }} 
                   />
                 </div>
               </div>
 
-              <div style={{ 
-                padding: '0.75rem 1.25rem',
-                background: '#fafafa',
-                borderTop: '1px solid #f0f0f0',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '0.5rem',
-                fontSize: '0.8rem',
-                color: '#404040'
-              }}>
-                <div>
-                  <span style={{ color: '#737373' }}>Budget:</span>{' '}
-                  <strong>₹{(project.budget / 100000).toFixed(1)}L</strong>
-                </div>
-                <div>
-                  <span style={{ color: '#737373' }}>Allocated:</span>{' '}
-                  <strong>₹{(project.allocated / 100000).toFixed(1)}L</strong>
-                </div>
-                <div>
-                  <span style={{ color: '#737373' }}>Start:</span>{' '}
-                  <span>{project.startDate}</span>
-                </div>
-                <div>
-                  <span style={{ color: '#737373' }}>Expected:</span>{' '}
-                  <span>{project.expectedCompletion}</span>
-                </div>
+              <div style={{ padding: '0.75rem 1.25rem', background: '#fafafa', borderTop: '1px solid #f0f0f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: '#404040' }}>
+                <div><span style={{ color: '#737373' }}>Budget:</span> <strong>₹{(project.budget / 100000).toFixed(1)}L</strong></div>
+                <div><span style={{ color: '#737373' }}>Allocated:</span> <strong>₹{(project.allocated / 100000).toFixed(1)}L</strong></div>
+                <div><span style={{ color: '#737373' }}>Start:</span> <span>{project.startDate}</span></div>
+                <div><span style={{ color: '#737373' }}>Expected:</span> <span>{project.expectedCompletion}</span></div>
               </div>
 
-              <div style={{ 
-                padding: '0.75rem 1.25rem',
-                display: 'flex',
-                gap: '0.5rem',
-                borderTop: '1px solid #f0f0f0'
-              }}>
+              <div style={{ padding: '0.75rem 1.25rem', display: 'flex', gap: '0.5rem', borderTop: '1px solid #f0f0f0' }}>
                 <button 
                   onClick={() => { setSelectedProject(project); setShowModal(true); }}
                   className="btn-primary" 
-                  style={{ 
-                    flex: 1, 
-                    padding: '0.4rem', 
-                    fontSize: '0.8rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.3rem'
-                  }}
+                  style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}
                 >
                   <Eye size={16} /> View Details
                 </button>
-                <button className="btn-outline" style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem' }}>
-                  <TrendingUp size={16} /> Update
-                </button>
+                {canUpdate && (
+                  <button 
+                    onClick={() => { setProjectToUpdate(project); setShowUpdateModal(true); }}
+                    className="btn-outline" 
+                    style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}
+                  >
+                    <Edit size={16} /> Update
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* No Results */}
         {filteredProjects.length === 0 && (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: '3rem',
-            background: 'white',
-            borderRadius: '0.75rem',
-            border: '1px solid #f0f0f0'
-          }}>
+          <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '0.75rem', border: '1px solid #f0f0f0' }}>
             <Building2 size={48} color="#737373" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1a1a1a' }}>No projects found</h3>
-            <p style={{ color: '#737373', marginTop: '0.25rem' }}>
-              Try adjusting your filters or create a new project
-            </p>
-            <button className="btn-primary" style={{ marginTop: '1rem' }}>
-              <Plus size={16} /> Create New Project
-            </button>
+            <p style={{ color: '#737373', marginTop: '0.25rem' }}>Try adjusting your filters or create a new project</p>
+            {!isUser && <button className="btn-primary" style={{ marginTop: '1rem' }}><Plus size={16} /> Create New Project</button>}
           </div>
         )}
 
-        {/* Project Details Modal with Charts */}
+        <CreateProjectModal 
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onProjectCreated={() => setProjects([...DEVELOPMENT_PROJECTS])}
+        />
+
+        <UpdateProgressModal
+          isOpen={showUpdateModal}
+          onClose={() => { setShowUpdateModal(false); setProjectToUpdate(null); }}
+          project={projectToUpdate}
+          onUpdate={handleProjectUpdate}
+        />
+
+        <ReportModal
+          isOpen={showReportModal}
+          onClose={() => setShowReportModal(false)}
+          projects={projects}
+        />
+
         {showModal && selectedProject && (
           <div className="modal-overlay">
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="modal-content"
-              style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}
-            >
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'start', 
-                marginBottom: '1rem',
-                borderBottom: '1px solid #f0f0f0',
-                paddingBottom: '1rem'
-              }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="modal-content" style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>
-                    {selectedProject.name}
-                  </h3>
-                  <p style={{ fontSize: '0.85rem', color: '#737373' }}>
-                    {selectedProject.type} · {selectedProject.department}
-                  </p>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>{selectedProject.name}</h3>
+                  <p style={{ fontSize: '0.85rem', color: '#737373' }}>{selectedProject.type} · {selectedProject.department}</p>
                 </div>
-                <button 
-                  onClick={() => setShowModal(false)} 
-                  style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}
-                >
-                  ×
-                </button>
+                <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
               </div>
               
-              {/* Description */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <p style={{ color: '#404040', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                  {selectedProject.description}
-                </p>
+                <p style={{ color: '#404040', fontSize: '0.95rem', lineHeight: '1.6' }}>{selectedProject.description}</p>
                 {selectedProject.delayedReason && (
-                  <div style={{ 
-                    marginTop: '0.5rem', 
-                    padding: '0.5rem 1rem', 
-                    background: '#fee2e2', 
-                    borderRadius: '0.5rem',
-                    border: '1px solid #fecaca',
-                    fontSize: '0.85rem',
-                    color: '#991b1b'
-                  }}>
+                  <div style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', background: '#fee2e2', borderRadius: '0.5rem', border: '1px solid #fecaca', fontSize: '0.85rem', color: '#991b1b' }}>
                     <strong>⚠️ Delayed Reason:</strong> {selectedProject.delayedReason}
                   </div>
                 )}
               </div>
 
-              {/* Charts Row */}
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '1fr 1fr 1fr', 
-                gap: '1.5rem',
-                marginBottom: '1.5rem',
-                padding: '1rem',
-                background: '#fafafa',
-                borderRadius: '0.5rem',
-                border: '1px solid #f0f0f0'
-              }}>
-                {/* Progress Circle Chart */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem', padding: '1rem', background: '#fafafa', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>
-                    Overall Progress
-                  </h4>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <ProgressChart 
-                      progress={selectedProject.progress} 
-                      delayed={selectedProject.status === 'Delayed'} 
-                    />
-                  </div>
+                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Overall Progress</h4>
+                  <ProgressChart progress={selectedProject.progress} delayed={selectedProject.status === 'Delayed'} />
                 </div>
 
-                {/* Milestone Progress */}
                 <div>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>
-                    Milestone Progress
-                  </h4>
-                  <div style={{ 
-                    background: 'white', 
-                    padding: '1rem', 
-                    borderRadius: '0.5rem',
-                    border: '1px solid #f0f0f0'
-                  }}>
+                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Milestone Progress</h4>
+                  <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                       <span style={{ fontSize: '0.8rem', color: '#404040' }}>
                         {getProjectStats(selectedProject).completedMilestones} of {getProjectStats(selectedProject).totalMilestones} completed
@@ -769,33 +1121,15 @@ const Development = () => {
                         initial={{ width: 0 }}
                         animate={{ width: `${getProjectStats(selectedProject).milestoneProgress}%` }}
                         transition={{ duration: 0.8 }}
-                        style={{ 
-                          height: '100%', 
-                          background: getProjectStats(selectedProject).milestoneProgress > 70 ? '#22c55e' : 
-                                     getProjectStats(selectedProject).milestoneProgress > 40 ? '#f59e0b' : '#b91c1c',
-                          borderRadius: '9999px'
-                        }} 
+                        style={{ height: '100%', background: getProjectStats(selectedProject).milestoneProgress > 70 ? '#22c55e' : getProjectStats(selectedProject).milestoneProgress > 40 ? '#f59e0b' : '#b91c1c', borderRadius: '9999px' }} 
                       />
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem', fontSize: '0.65rem', color: '#737373' }}>
-                      <span>Started</span>
-                      <span>In Progress</span>
-                      <span>Complete</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Budget Utilization */}
                 <div>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>
-                    Budget Utilization
-                  </h4>
-                  <div style={{ 
-                    background: 'white', 
-                    padding: '1rem', 
-                    borderRadius: '0.5rem',
-                    border: '1px solid #f0f0f0'
-                  }}>
+                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Budget Utilization</h4>
+                  <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                       <span style={{ fontSize: '0.8rem', color: '#404040' }}>
                         ₹{(selectedProject.allocated / 100000).toFixed(1)}L of ₹{(selectedProject.budget / 100000).toFixed(1)}L
@@ -809,48 +1143,21 @@ const Development = () => {
                         initial={{ width: 0 }}
                         animate={{ width: `${getProjectStats(selectedProject).budgetUtilization}%` }}
                         transition={{ duration: 0.8 }}
-                        style={{ 
-                          height: '100%', 
-                          background: getProjectStats(selectedProject).budgetUtilization > 70 ? '#22c55e' : 
-                                     getProjectStats(selectedProject).budgetUtilization > 40 ? '#f59e0b' : '#ef4444',
-                          borderRadius: '9999px'
-                        }} 
+                        style={{ height: '100%', background: getProjectStats(selectedProject).budgetUtilization > 70 ? '#22c55e' : getProjectStats(selectedProject).budgetUtilization > 40 ? '#f59e0b' : '#ef4444', borderRadius: '9999px' }} 
                       />
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem', fontSize: '0.65rem', color: '#737373' }}>
-                      <span>Remaining: ₹{((selectedProject.budget - selectedProject.allocated) / 100000).toFixed(1)}L</span>
-                      <span>Used: ₹{(selectedProject.allocated / 100000).toFixed(1)}L</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Status Timeline */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
-                  Project Status Timeline
-                </h4>
-                <StatusTimeline project={selectedProject} />
-              </div>
-
-              {/* Project Details Grid */}
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '1fr 1fr', 
-                gap: '0.5rem', 
-                marginBottom: '1.5rem',
-                fontSize: '0.9rem',
-                background: '#fafafa',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #f0f0f0'
-              }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
                 <div><strong>Status:</strong> <span className={`status-badge ${getStatusColor(selectedProject.status)}`}>{selectedProject.status}</span></div>
                 <div><strong>Progress:</strong> {selectedProject.progress}%</div>
                 <div><strong>Budget:</strong> ₹{(selectedProject.budget/100000).toFixed(1)}L</div>
                 <div><strong>Allocated:</strong> ₹{(selectedProject.allocated/100000).toFixed(1)}L</div>
                 <div><strong>Start Date:</strong> {selectedProject.startDate}</div>
                 <div><strong>Expected Completion:</strong> {selectedProject.expectedCompletion}</div>
+                <div><strong>State:</strong> {selectedProject.state || 'Chhattisgarh'}</div>
                 <div><strong>District:</strong> {selectedProject.district}</div>
                 <div><strong>Constituency:</strong> {selectedProject.constituency}</div>
                 <div><strong>Block:</strong> {selectedProject.block}</div>
@@ -859,38 +1166,30 @@ const Development = () => {
                 <div><strong>Village:</strong> {selectedProject.village}</div>
               </div>
 
-              {/* Milestones */}
               <h4 style={{ fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.95rem', color: '#1a1a1a' }}>
                 📋 Milestones ({getProjectStats(selectedProject).completedMilestones}/{getProjectStats(selectedProject).totalMilestones})
               </h4>
               {selectedProject.milestones.map((m, i) => (
-                <div key={i} style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.5rem', 
-                  padding: '0.5rem 0', 
-                  borderBottom: '1px solid #f5f5f5' 
-                }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0', borderBottom: '1px solid #f5f5f5' }}>
                   <span style={{ fontSize: '1.1rem' }}>{m.completed ? '✅' : '⏳'}</span>
                   <span style={{ flex: 1, fontSize: '0.9rem' }}>{m.name}</span>
-                  <span style={{ 
-                    fontSize: '0.75rem', 
-                    color: m.completed ? '#166534' : '#737373',
-                    background: m.completed ? '#dcfce7' : '#f0f0f0',
-                    padding: '0.15rem 0.5rem',
-                    borderRadius: '9999px'
-                  }}>
+                  <span style={{ fontSize: '0.75rem', color: m.completed ? '#166534' : '#737373', background: m.completed ? '#dcfce7' : '#f0f0f0', padding: '0.15rem 0.5rem', borderRadius: '9999px' }}>
                     {m.completed ? 'Completed' : 'Pending'}
                   </span>
                   <span style={{ fontSize: '0.75rem', color: '#737373' }}>{m.date}</span>
                 </div>
               ))}
 
-              {/* Action Buttons */}
               <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
-                <button className="btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <TrendingUp size={18} /> Update Progress
-                </button>
+                {canUpdate && (
+                  <button 
+                    className="btn-primary" 
+                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                    onClick={() => { setShowModal(false); setProjectToUpdate(selectedProject); setShowUpdateModal(true); }}
+                  >
+                    <Edit size={18} /> Update Progress
+                  </button>
+                )}
                 <button className="btn-outline" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   <BarChart3 size={18} /> View Report
                 </button>

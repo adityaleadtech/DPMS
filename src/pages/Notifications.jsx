@@ -13,10 +13,11 @@ import {
   Trash2,
   Check,
   Users,
-  MapPin
+  MapPin,
+  Clock
 } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
-import { NOTIFICATIONS, USERS } from '../api/data';
+import { NOTIFICATIONS, USERS, canAccessPage } from '../api/data';
 import { useAuth } from '../context/AuthContext';
 import { 
   getStates,
@@ -25,8 +26,9 @@ import {
 } from '../api/data';
 
 const Notifications = () => {
-  const { user, isPM, isCM, isMinister } = useAuth();
+  const { user, isPM, isCM, isMinister, isMP, isMLA } = useAuth();
   const [filterType, setFilterType] = useState('All');
+  const [filterState, setFilterState] = useState('');
   const [filterDistrict, setFilterDistrict] = useState('');
   const [filterRead, setFilterRead] = useState('All');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -39,10 +41,33 @@ const Notifications = () => {
     title: '',
     message: '',
     type: 'Info',
+    state: '',
     district: '',
     constituency: '',
     priority: 'Medium'
   });
+
+  // Check if user can access notifications
+  if (!canAccessPage(user, 'notifications')) {
+    return (
+      <LayoutWrapper>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '4rem', 
+          background: 'white', 
+          borderRadius: '0.75rem', 
+          border: '1px solid #f0f0f0' 
+        }}>
+          <Bell size={48} color="#737373" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.5rem', color: '#b91c1c', marginTop: '1rem' }}>Access Denied</h2>
+          <p style={{ color: '#737373' }}>You don't have permission to view notifications.</p>
+          <p style={{ color: '#737373', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+            Please contact your administrator for access.
+          </p>
+        </div>
+      </LayoutWrapper>
+    );
+  }
 
   // Check if user can create notifications for all
   const canCreateForAll = isPM || isCM;
@@ -58,6 +83,16 @@ const Notifications = () => {
     return 'Chhattisgarh';
   };
 
+  // Get available states based on user role
+  const getAvailableStates = () => {
+    if (isPM) return ['All States', 'Chhattisgarh', 'Madhya Pradesh', 'Maharashtra', 'Uttar Pradesh'];
+    if (isCM) return ['All States', 'Chhattisgarh'];
+    if (isMinister) return ['All States', 'Chhattisgarh'];
+    if (isMP) return ['All States', 'Chhattisgarh'];
+    if (isMLA) return ['All States', 'Chhattisgarh'];
+    return ['Chhattisgarh'];
+  };
+
   // Get available districts based on user role
   const getAvailableDistricts = () => {
     if (isPM) return ['All Districts', 'Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'];
@@ -69,10 +104,9 @@ const Notifications = () => {
   };
 
   // Get available constituencies based on user role
-  const getAvailableConstituencies = (district) => {
+  const getAvailableConstituencies = () => {
     if (isPM || isCM) {
-      const allConstituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'];
-      return district === 'All Districts' ? ['All Constituencies', ...allConstituencies] : allConstituencies;
+      return ['All Constituencies', 'Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'];
     }
     if (isMinister) {
       return ['All Constituencies', 'Raipur City South', 'Raipur City North'];
@@ -88,12 +122,14 @@ const Notifications = () => {
 
   const types = ['All', 'Info', 'Success', 'Warning', 'Alert', 'Critical'];
   const readStatuses = ['All', 'Read', 'Unread'];
+  const states = ['All States', 'Chhattisgarh', 'Madhya Pradesh', 'Maharashtra', 'Uttar Pradesh'];
   const districts = ['All Districts', 'Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'];
 
   // Filter notifications
   const filtered = notifications.filter(n => {
     let match = true;
     if (filterType !== 'All' && n.type !== filterType) match = false;
+    if (filterState !== 'All States' && filterState !== '' && n.state !== filterState) match = false;
     if (filterDistrict !== 'All Districts' && filterDistrict !== '' && n.district !== filterDistrict) match = false;
     if (filterRead === 'Read' && !n.read) match = false;
     if (filterRead === 'Unread' && n.read) match = false;
@@ -128,6 +164,7 @@ const Notifications = () => {
       type: newNotification.type,
       date: new Date().toISOString().split('T')[0],
       read: false,
+      state: newNotification.state === 'All States' ? 'All States' : newNotification.state,
       district: newNotification.district === 'All Districts' ? 'All Districts' : newNotification.district,
       constituency: newNotification.constituency === 'All Constituencies' ? 'All' : newNotification.constituency,
       createdBy: user?.name,
@@ -141,6 +178,7 @@ const Notifications = () => {
       title: '',
       message: '',
       type: 'Info',
+      state: '',
       district: '',
       constituency: '',
       priority: 'Medium'
@@ -208,7 +246,7 @@ const Notifications = () => {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            {(isPM || isCM || isMinister || isMP || isMLA) && (
+            {(canCreateForAll || canCreateForOwn) && (
               <button 
                 className="btn-primary" 
                 onClick={() => setShowCreateModal(true)}
@@ -242,6 +280,15 @@ const Notifications = () => {
           </select>
 
           <select 
+            value={filterState} 
+            onChange={(e) => setFilterState(e.target.value)}
+            style={{ padding: '0.4rem 0.8rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white', outline: 'none', minWidth: '140px' }}
+          >
+            <option value="">All States</option>
+            {states.filter(s => s !== 'All States').map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+
+          <select 
             value={filterDistrict} 
             onChange={(e) => setFilterDistrict(e.target.value)}
             style={{ padding: '0.4rem 0.8rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white', outline: 'none', minWidth: '140px' }}
@@ -260,7 +307,7 @@ const Notifications = () => {
         </div>
 
         {/* Filter Summary */}
-        {(filterType !== 'All' || filterDistrict || filterRead !== 'All') && (
+        {(filterType !== 'All' || filterState || filterDistrict || filterRead !== 'All') && (
           <div style={{ 
             marginBottom: '1rem', 
             padding: '0.4rem 1rem', 
@@ -275,8 +322,9 @@ const Notifications = () => {
           }}>
             <span style={{ fontWeight: '600', color: '#404040' }}>Active Filters:</span>
             {filterType !== 'All' && <span className="status-badge status-active">{filterType}</span>}
-            {filterDistrict && <span className="status-badge status-scheduled">{filterDistrict}</span>}
-            {filterRead !== 'All' && <span className="status-badge status-completed">{filterRead}</span>}
+            {filterState && <span className="status-badge status-scheduled">{filterState}</span>}
+            {filterDistrict && <span className="status-badge status-completed">{filterDistrict}</span>}
+            {filterRead !== 'All' && <span className="status-badge status-upcoming">{filterRead}</span>}
             <span style={{ marginLeft: 'auto', color: '#737373' }}>
               {filtered.length} notifications
             </span>
@@ -351,7 +399,7 @@ const Notifications = () => {
                 </p>
                 <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', color: '#a3a3a3', marginTop: '0.25rem', flexWrap: 'wrap' }}>
                   <span>📅 {n.date}</span>
-                  <span>📍 {n.district} · {n.constituency}</span>
+                  <span>📍 {n.state || 'Chhattisgarh'} · {n.district} · {n.constituency}</span>
                   {n.createdBy && (
                     <span>✏️ By: {n.createdBy} ({n.createdByRole})</span>
                   )}
@@ -393,7 +441,7 @@ const Notifications = () => {
             <Bell size={48} color="#737373" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1a1a1a' }}>No notifications found</h3>
             <p style={{ color: '#737373', marginTop: '0.25rem' }}>
-              {filterType !== 'All' || filterDistrict || filterRead !== 'All' 
+              {filterType !== 'All' || filterState || filterDistrict || filterRead !== 'All' 
                 ? 'Try adjusting your filters' 
                 : 'All caught up! No new notifications'}
             </p>
@@ -424,7 +472,7 @@ const Notifications = () => {
                   </h3>
                   <p style={{ fontSize: '0.85rem', color: '#737373' }}>
                     {canCreateForAll 
-                      ? 'You can send notifications to all districts' 
+                      ? 'You can send notifications to all states and districts' 
                       : `You can send notifications to your region: ${getUserRegion()}`}
                   </p>
                 </div>
@@ -495,9 +543,26 @@ const Notifications = () => {
                   </select>
                 </div>
 
-                {canCreateForAll ? (
-                  // PM/CM can choose any district and constituency
+                {/* Location Fields - Based on Role */}
+                {(canCreateForAll) ? (
+                  // PM/CM can choose any state, district, and constituency
                   <>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+                        State
+                      </label>
+                      <select
+                        value={newNotification.state}
+                        onChange={(e) => setNewNotification({...newNotification, state: e.target.value, district: '', constituency: ''})}
+                        style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+                      >
+                        <option value="All States">All States</option>
+                        {states.filter(s => s !== 'All States').map(s => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
                         District
@@ -506,6 +571,7 @@ const Notifications = () => {
                         value={newNotification.district}
                         onChange={(e) => setNewNotification({...newNotification, district: e.target.value})}
                         style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+                        disabled={newNotification.state === 'All States' && !newNotification.state}
                       >
                         <option value="All Districts">All Districts</option>
                         {districts.filter(d => d !== 'All Districts').map(d => (
@@ -522,24 +588,29 @@ const Notifications = () => {
                         value={newNotification.constituency}
                         onChange={(e) => setNewNotification({...newNotification, constituency: e.target.value})}
                         style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+                        disabled={!newNotification.district || newNotification.district === 'All Districts'}
                       >
                         <option value="All Constituencies">All Constituencies</option>
-                        <option value="Raipur City South">Raipur City South</option>
-                        <option value="Raipur City North">Raipur City North</option>
-                        <option value="Bilaspur">Bilaspur</option>
-                        <option value="Durg City">Durg City</option>
-                        <option value="Raigarh">Raigarh</option>
-                        <option value="Jagdalpur">Jagdalpur</option>
-                        <option value="Korba">Korba</option>
-                        <option value="Rajnandgaon">Rajnandgaon</option>
-                        <option value="Ambikapur">Ambikapur</option>
-                        <option value="Dhamtari">Dhamtari</option>
+                        {['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'].map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
                       </select>
                     </div>
                   </>
                 ) : (
                   // Ministers/MP/MLA can only send to their region
                   <>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+                        State <span style={{ fontSize: '0.7rem', color: '#737373' }}>(Your Region)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value="Chhattisgarh"
+                        disabled
+                        style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: '#f5f5f5', outline: 'none' }}
+                      />
+                    </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
                         District <span style={{ fontSize: '0.7rem', color: '#737373' }}>(Your Region)</span>
@@ -557,7 +628,7 @@ const Notifications = () => {
                       </label>
                       <input
                         type="text"
-                        value={user?.region || 'Raipur City South'}
+                        value={isMLA ? user?.region || 'Raipur City South' : isMP ? user?.region || 'Raipur' : 'N/A'}
                         disabled
                         style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: '#f5f5f5', outline: 'none' }}
                       />
@@ -648,9 +719,12 @@ const Notifications = () => {
                 fontSize: '0.85rem'
               }}>
                 <div><strong>Date:</strong> {selectedNotification.date}</div>
-                <div><strong>District:</strong> {selectedNotification.district}</div>
-                <div><strong>Constituency:</strong> {selectedNotification.constituency}</div>
                 <div><strong>Status:</strong> {selectedNotification.read ? 'Read' : 'Unread'}</div>
+                <div><strong>State:</strong> {selectedNotification.state || 'Chhattisgarh'}</div>
+                <div><strong>District:</strong> {selectedNotification.district}</div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <strong>Constituency:</strong> {selectedNotification.constituency}
+                </div>
                 {selectedNotification.createdBy && (
                   <div style={{ gridColumn: '1 / -1' }}>
                     <strong>Created By:</strong> {selectedNotification.createdBy} ({selectedNotification.createdByRole})

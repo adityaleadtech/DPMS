@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Wallet, Search, Filter, Plus, XCircle, Users, MapPin, IndianRupee, Eye } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
 import { FUNDING } from '../api/data';
+import { canAccessPage } from '../api/data';
 import { useAuth } from '../context/AuthContext';
 
 const Funding = () => {
-  const { isPM, isCM, isMinister } = useAuth();
+  const { user, isPM, isCM, isMinister } = useAuth();
   const canManageFunding = isPM || isCM || isMinister;
   
   const [search, setSearch] = useState('');
@@ -14,6 +16,28 @@ const Funding = () => {
   const [selectedFund, setSelectedFund] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Check if user can access funding
+  if (!canAccessPage(user, 'funding')) {
+    return (
+      <LayoutWrapper>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '4rem', 
+          background: 'white', 
+          borderRadius: '0.75rem', 
+          border: '1px solid #f0f0f0' 
+        }}>
+          <Wallet size={48} color="#737373" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.5rem', color: '#b91c1c', marginTop: '1rem' }}>Access Denied</h2>
+          <p style={{ color: '#737373' }}>You don't have permission to view funding.</p>
+          <p style={{ color: '#737373', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+            Please contact your administrator for access.
+          </p>
+        </div>
+      </LayoutWrapper>
+    );
+  }
 
   const districts = [...new Set(FUNDING.map(f => f.district))];
   const constituencies = filterDistrict ? [...new Set(FUNDING.filter(f => f.district === filterDistrict).map(f => f.constituency))] : [];
@@ -57,7 +81,7 @@ const Funding = () => {
             placeholder="Search projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, minWidth: '150px' }}
+            style={{ flex: 1, minWidth: '150px', padding: '0.5rem 1rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', outline: 'none' }}
           />
           <select value={filterDistrict} onChange={(e) => { setFilterDistrict(e.target.value); setFilterConstituency(''); }}>
             <option value="">All Districts</option>

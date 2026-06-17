@@ -28,6 +28,24 @@ export const HIERARCHY = {
                       ]
                     }
                   ]
+                },
+                {
+                  name: 'Raipur City North',
+                  blocks: [
+                    {
+                      name: 'Raipur North Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Simga',
+                          pollingBooths: [
+                            { name: 'Booth 103', code: '103' },
+                            { name: 'Booth 104', code: '104' }
+                          ],
+                          villages: ['Simga', 'Kurud', 'Risali']
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -52,6 +70,24 @@ export const HIERARCHY = {
                             { name: 'Booth 202', code: '202' }
                           ],
                           villages: ['Bilaspur City', 'Ratanpur', 'Kota']
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: 'Bilaspur Rural',
+                  blocks: [
+                    {
+                      name: 'Bilaspur Rural Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Lormi',
+                          pollingBooths: [
+                            { name: 'Booth 203', code: '203' },
+                            { name: 'Booth 204', code: '204' }
+                          ],
+                          villages: ['Lormi', 'Mungeli', 'Janjgir']
                         }
                       ]
                     }
@@ -84,6 +120,541 @@ export const HIERARCHY = {
                       ]
                     }
                   ]
+                },
+                {
+                  name: 'Durg Gramin',
+                  blocks: [
+                    {
+                      name: 'Durg Gramin Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Dongargarh',
+                          pollingBooths: [
+                            { name: 'Booth 303', code: '303' },
+                            { name: 'Booth 304', code: '304' }
+                          ],
+                          villages: ['Dongargarh', 'Manpur', 'Barwahi']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Raigarh',
+          parliamentConstituencies: [
+            {
+              name: 'Raigarh',
+              assemblyConstituencies: [
+                {
+                  name: 'Raigarh City',
+                  blocks: [
+                    {
+                      name: 'Raigarh Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Raigarh',
+                          pollingBooths: [
+                            { name: 'Booth 401', code: '401' },
+                            { name: 'Booth 402', code: '402' }
+                          ],
+                          villages: ['Raigarh City', 'Sakti', 'Akaltara']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Jagdalpur',
+          parliamentConstituencies: [
+            {
+              name: 'Bastar',
+              assemblyConstituencies: [
+                {
+                  name: 'Jagdalpur City',
+                  blocks: [
+                    {
+                      name: 'Jagdalpur Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Jagdalpur',
+                          pollingBooths: [
+                            { name: 'Booth 501', code: '501' },
+                            { name: 'Booth 502', code: '502' }
+                          ],
+                          villages: ['Jagdalpur City', 'Bastar', 'Kondagaon']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Korba',
+          parliamentConstituencies: [
+            {
+              name: 'Korba',
+              assemblyConstituencies: [
+                {
+                  name: 'Korba City',
+                  blocks: [
+                    {
+                      name: 'Korba Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Korba',
+                          pollingBooths: [
+                            { name: 'Booth 601', code: '601' },
+                            { name: 'Booth 602', code: '602' }
+                          ],
+                          villages: ['Korba City', 'Katghora', 'Pali']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Rajnandgaon',
+          parliamentConstituencies: [
+            {
+              name: 'Rajnandgaon',
+              assemblyConstituencies: [
+                {
+                  name: 'Rajnandgaon City',
+                  blocks: [
+                    {
+                      name: 'Rajnandgaon Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Rajnandgaon',
+                          pollingBooths: [
+                            { name: 'Booth 701', code: '701' },
+                            { name: 'Booth 702', code: '702' }
+                          ],
+                          villages: ['Rajnandgaon City', 'Dongargaon', 'Khujji']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Ambikapur',
+          parliamentConstituencies: [
+            {
+              name: 'Sarguja',
+              assemblyConstituencies: [
+                {
+                  name: 'Ambikapur City',
+                  blocks: [
+                    {
+                      name: 'Ambikapur Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Ambikapur',
+                          pollingBooths: [
+                            { name: 'Booth 801', code: '801' },
+                            { name: 'Booth 802', code: '802' }
+                          ],
+                          villages: ['Ambikapur City', 'Surguja', 'Lundra']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Dhamtari',
+          parliamentConstituencies: [
+            {
+              name: 'Kanker',
+              assemblyConstituencies: [
+                {
+                  name: 'Dhamtari City',
+                  blocks: [
+                    {
+                      name: 'Dhamtari Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Dhamtari',
+                          pollingBooths: [
+                            { name: 'Booth 901', code: '901' },
+                            { name: 'Booth 902', code: '902' }
+                          ],
+                          villages: ['Dhamtari City', 'Kurud', 'Sihawa']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Mahasamund',
+          parliamentConstituencies: [
+            {
+              name: 'Mahasamund',
+              assemblyConstituencies: [
+                {
+                  name: 'Mahasamund City',
+                  blocks: [
+                    {
+                      name: 'Mahasamund Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Mahasamund',
+                          pollingBooths: [
+                            { name: 'Booth 1001', code: '1001' },
+                            { name: 'Booth 1002', code: '1002' }
+                          ],
+                          villages: ['Mahasamund City', 'Saraipali', 'Basna']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Madhya Pradesh',
+      districts: [
+        {
+          name: 'Bhopal',
+          parliamentConstituencies: [
+            {
+              name: 'Bhopal',
+              assemblyConstituencies: [
+                {
+                  name: 'Bhopal North',
+                  blocks: [
+                    {
+                      name: 'Bhopal North Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Bhopal North',
+                          pollingBooths: [
+                            { name: 'Booth MP-101', code: 'MP-101' },
+                            { name: 'Booth MP-102', code: 'MP-102' }
+                          ],
+                          villages: ['Bhopal City', 'Kolar', 'Berasia']
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: 'Bhopal South',
+                  blocks: [
+                    {
+                      name: 'Bhopal South Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Bhopal South',
+                          pollingBooths: [
+                            { name: 'Booth MP-103', code: 'MP-103' },
+                            { name: 'Booth MP-104', code: 'MP-104' }
+                          ],
+                          villages: ['Kolar', 'Berasia', 'Sehore']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Indore',
+          parliamentConstituencies: [
+            {
+              name: 'Indore',
+              assemblyConstituencies: [
+                {
+                  name: 'Indore City',
+                  blocks: [
+                    {
+                      name: 'Indore City Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Indore',
+                          pollingBooths: [
+                            { name: 'Booth MP-201', code: 'MP-201' },
+                            { name: 'Booth MP-202', code: 'MP-202' }
+                          ],
+                          villages: ['Indore City', 'Rau', 'Depalpur']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Jabalpur',
+          parliamentConstituencies: [
+            {
+              name: 'Jabalpur',
+              assemblyConstituencies: [
+                {
+                  name: 'Jabalpur West',
+                  blocks: [
+                    {
+                      name: 'Jabalpur West Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Jabalpur',
+                          pollingBooths: [
+                            { name: 'Booth MP-301', code: 'MP-301' },
+                            { name: 'Booth MP-302', code: 'MP-302' }
+                          ],
+                          villages: ['Jabalpur City', 'Katni', 'Rewa']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Maharashtra',
+      districts: [
+        {
+          name: 'Mumbai',
+          parliamentConstituencies: [
+            {
+              name: 'Mumbai',
+              assemblyConstituencies: [
+                {
+                  name: 'Mumbai South',
+                  blocks: [
+                    {
+                      name: 'Mumbai South Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Mumbai South',
+                          pollingBooths: [
+                            { name: 'Booth MH-101', code: 'MH-101' },
+                            { name: 'Booth MH-102', code: 'MH-102' }
+                          ],
+                          villages: ['Mumbai City', 'Colaba', 'Worli']
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: 'Mumbai North',
+                  blocks: [
+                    {
+                      name: 'Mumbai North Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Mumbai North',
+                          pollingBooths: [
+                            { name: 'Booth MH-103', code: 'MH-103' },
+                            { name: 'Booth MH-104', code: 'MH-104' }
+                          ],
+                          villages: ['Andheri', 'Bandra', 'Santacruz']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Pune',
+          parliamentConstituencies: [
+            {
+              name: 'Pune',
+              assemblyConstituencies: [
+                {
+                  name: 'Pune City',
+                  blocks: [
+                    {
+                      name: 'Pune City Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Pune',
+                          pollingBooths: [
+                            { name: 'Booth MH-201', code: 'MH-201' },
+                            { name: 'Booth MH-202', code: 'MH-202' }
+                          ],
+                          villages: ['Pune City', 'Kothrud', 'Pimpri']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Nagpur',
+          parliamentConstituencies: [
+            {
+              name: 'Nagpur',
+              assemblyConstituencies: [
+                {
+                  name: 'Nagpur West',
+                  blocks: [
+                    {
+                      name: 'Nagpur West Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Nagpur',
+                          pollingBooths: [
+                            { name: 'Booth MH-301', code: 'MH-301' },
+                            { name: 'Booth MH-302', code: 'MH-302' }
+                          ],
+                          villages: ['Nagpur City', 'Wardha', 'Bhandara']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Uttar Pradesh',
+      districts: [
+        {
+          name: 'Lucknow',
+          parliamentConstituencies: [
+            {
+              name: 'Lucknow',
+              assemblyConstituencies: [
+                {
+                  name: 'Lucknow Central',
+                  blocks: [
+                    {
+                      name: 'Lucknow Central Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Lucknow Central',
+                          pollingBooths: [
+                            { name: 'Booth UP-101', code: 'UP-101' },
+                            { name: 'Booth UP-102', code: 'UP-102' }
+                          ],
+                          villages: ['Lucknow City', 'Gomti Nagar', 'Aliganj']
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: 'Lucknow North',
+                  blocks: [
+                    {
+                      name: 'Lucknow North Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Lucknow North',
+                          pollingBooths: [
+                            { name: 'Booth UP-103', code: 'UP-103' },
+                            { name: 'Booth UP-104', code: 'UP-104' }
+                          ],
+                          villages: ['Hazratganj', 'Chowk', 'Aminabad']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Kanpur',
+          parliamentConstituencies: [
+            {
+              name: 'Kanpur',
+              assemblyConstituencies: [
+                {
+                  name: 'Kanpur North',
+                  blocks: [
+                    {
+                      name: 'Kanpur North Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Kanpur',
+                          pollingBooths: [
+                            { name: 'Booth UP-201', code: 'UP-201' },
+                            { name: 'Booth UP-202', code: 'UP-202' }
+                          ],
+                          villages: ['Kanpur City', 'Unnao', 'Bithoor']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Varanasi',
+          parliamentConstituencies: [
+            {
+              name: 'Varanasi',
+              assemblyConstituencies: [
+                {
+                  name: 'Varanasi East',
+                  blocks: [
+                    {
+                      name: 'Varanasi East Block',
+                      panchayats: [
+                        {
+                          name: 'Gram Panchayat Varanasi',
+                          pollingBooths: [
+                            { name: 'Booth UP-301', code: 'UP-301' },
+                            { name: 'Booth UP-302', code: 'UP-302' }
+                          ],
+                          villages: ['Varanasi City', 'Sarnath', 'Ramnagar']
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -102,7 +673,9 @@ export const USERS = [
     role: 'PM', 
     region: 'India', 
     password: 'pm123',
-    email: 'pm@india.gov.in'
+    email: 'pm@india.gov.in',
+    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Narendra_Modi_%28crop%29.jpg/220px-Narendra_Modi_%28crop%29.jpg',
+    department: 'Prime Minister Office'
   },
   { 
     id: 'cm1', 
@@ -110,7 +683,9 @@ export const USERS = [
     role: 'CM', 
     region: 'Chhattisgarh', 
     password: 'cm123',
-    email: 'cm@chhattisgarh.gov.in'
+    email: 'cm@chhattisgarh.gov.in',
+    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Vishnu_Deo_Sai.jpg/220px-Vishnu_Deo_Sai.jpg',
+    department: 'Chief Minister Office'
   },
   { 
     id: 'minister1', 
@@ -119,7 +694,28 @@ export const USERS = [
     region: 'Chhattisgarh',
     department: 'Agriculture',
     password: 'minister123',
-    email: 'rv.netam@cg.gov.in'
+    email: 'rv.netam@cg.gov.in',
+    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9I7glunkVzaWPJaeMhAzGhmvP4m-A_jsW9h9jOm_5GBHQTWvLnrwbcyWG0iRHyZGshs08D3-eMBiCyxxlcX1xfTLK-755Sz9nW0umvx8&s=10'
+  },
+  { 
+    id: 'minister2', 
+    name: 'Arjun Singh', 
+    role: 'Minister', 
+    region: 'Chhattisgarh',
+    department: 'Health',
+    password: 'minister123',
+    email: 'arjun.singh@cg.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=center'
+  },
+  { 
+    id: 'minister3', 
+    name: 'Meena Sharma', 
+    role: 'Minister', 
+    region: 'Chhattisgarh',
+    department: 'Education',
+    password: 'minister123',
+    email: 'meena.sharma@cg.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=center'
   },
   { 
     id: 'mp1', 
@@ -127,7 +723,8 @@ export const USERS = [
     role: 'MP', 
     region: 'Raipur', 
     password: 'mp123',
-    email: 'mp.raipur@parliament.gov.in'
+    email: 'mp.raipur@parliament.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=center'
   },
   { 
     id: 'mla1', 
@@ -135,7 +732,8 @@ export const USERS = [
     role: 'MLA', 
     region: 'Raipur City South', 
     password: 'mla123',
-    email: 'mla.raipursouth@assembly.gov.in'
+    email: 'mla.raipursouth@assembly.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=center'
   },
   { 
     id: 'surveyor1', 
@@ -143,7 +741,8 @@ export const USERS = [
     role: 'Surveyor', 
     region: 'Raipur', 
     password: 'surveyor123',
-    email: 'surveyor@cg.gov.in'
+    email: 'surveyor@cg.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=center'
   },
   { 
     id: 'auditor1', 
@@ -151,7 +750,8 @@ export const USERS = [
     role: 'Auditor', 
     region: 'Chhattisgarh', 
     password: 'auditor123',
-    email: 'auditor@cg.gov.in'
+    email: 'auditor@cg.gov.in',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=center'
   },
   { 
     id: 'user1', 
@@ -159,51 +759,119 @@ export const USERS = [
     role: 'USER', 
     region: 'Raipur', 
     password: 'user123',
-    email: 'amit.kumar@gmail.com'
+    email: 'amit.kumar@gmail.com',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=center'
   }
 ];
 
-// ============ VOTERS ============
-export const VOTERS = Array.from({ length: 500 }, (_, i) => {
-  const firstNames = ['Rahul', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Neha', 'Raj', 'Kavya', 'Arjun', 'Meera', 'Suresh', 'Anita', 'Deepak', 'Sunita', 'Ravi', 'Pooja', 'Kiran', 'Manoj', 'Jyoti', 'Sanjay'];
-  const lastNames = ['Kumar', 'Singh', 'Sharma', 'Patel', 'Verma', 'Yadav', 'Gupta', 'Joshi', 'Malik', 'Reddy', 'Sahu', 'Kashyap', 'Chauhan', 'Thakur', 'Rathore'];
+// ============ VOTERS - Distributed Across All Districts ============
+export const VOTERS = Array.from({ length: 600 }, (_, i) => {
+  const firstNames = ['Rahul', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Neha', 'Raj', 'Kavya', 'Arjun', 'Meera', 'Suresh', 'Anita', 'Deepak', 'Sunita', 'Ravi', 'Pooja', 'Kiran', 'Manoj', 'Jyoti', 'Sanjay', 'Ramesh', 'Kavita', 'Vijay', 'Anjali', 'Sanjay'];
+  const lastNames = ['Kumar', 'Singh', 'Sharma', 'Patel', 'Verma', 'Yadav', 'Gupta', 'Joshi', 'Malik', 'Reddy', 'Sahu', 'Kashyap', 'Chauhan', 'Thakur', 'Rathore', 'Mehta', 'Agarwal', 'Dubey', 'Mishra', 'Tiwari'];
   const genders = ['Male', 'Female', 'Other'];
   const castes = ['General', 'OBC', 'SC', 'ST'];
   const relations = ['Father', 'Mother', 'Husband', 'Wife'];
   
-  // States with their districts
-  const states = [
-    { name: 'Chhattisgarh', districts: ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'] },
-    { name: 'Madhya Pradesh', districts: ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Rewa', 'Satna', 'Katni', 'Chhindwara'] },
-    { name: 'Maharashtra', districts: ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur', 'Sangli'] },
-    { name: 'Uttar Pradesh', districts: ['Lucknow', 'Kanpur', 'Varanasi', 'Agra', 'Prayagraj', 'Ghaziabad', 'Noida', 'Meerut', 'Aligarh', 'Bareilly'] }
+  // All states with their complete districts
+  const allStates = [
+    { 
+      name: 'Chhattisgarh', 
+      districts: ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'] 
+    },
+    { 
+      name: 'Madhya Pradesh', 
+      districts: ['Bhopal', 'Indore', 'Jabalpur'] 
+    },
+    { 
+      name: 'Maharashtra', 
+      districts: ['Mumbai', 'Pune', 'Nagpur'] 
+    },
+    { 
+      name: 'Uttar Pradesh', 
+      districts: ['Lucknow', 'Kanpur', 'Varanasi'] 
+    }
   ];
   
-  const stateData = states[i % states.length];
-  const district = stateData.districts[i % stateData.districts.length];
+  // Distribute voters evenly across states and districts
+  const stateIndex = i % allStates.length;
+  const stateData = allStates[stateIndex];
   const state = stateData.name;
+  const district = stateData.districts[i % stateData.districts.length];
   
-  // Constituencies based on state
+  // Constituencies based on state and district
   const constituencies = {
-    'Chhattisgarh': ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'],
-    'Madhya Pradesh': ['Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Gwalior East', 'Ujjain North', 'Sagar City', 'Rewa East', 'Satna West', 'Katni South'],
-    'Maharashtra': ['Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Thane East', 'Nashik Central', 'Aurangabad North', 'Solapur City', 'Amravati East', 'Kolhapur South'],
-    'Uttar Pradesh': ['Lucknow Central', 'Kanpur North', 'Varanasi East', 'Agra West', 'Prayagraj South', 'Ghaziabad City', 'Noida East', 'Meerut West', 'Aligarh North', 'Bareilly South']
+    'Chhattisgarh': {
+      'Raipur': ['Raipur City South', 'Raipur City North'],
+      'Bilaspur': ['Bilaspur City', 'Bilaspur Rural'],
+      'Durg': ['Durg City', 'Durg Gramin'],
+      'Raigarh': ['Raigarh City'],
+      'Jagdalpur': ['Jagdalpur City'],
+      'Korba': ['Korba City'],
+      'Rajnandgaon': ['Rajnandgaon City'],
+      'Ambikapur': ['Ambikapur City'],
+      'Dhamtari': ['Dhamtari City'],
+      'Mahasamund': ['Mahasamund City']
+    },
+    'Madhya Pradesh': {
+      'Bhopal': ['Bhopal North', 'Bhopal South'],
+      'Indore': ['Indore City'],
+      'Jabalpur': ['Jabalpur West']
+    },
+    'Maharashtra': {
+      'Mumbai': ['Mumbai South', 'Mumbai North'],
+      'Pune': ['Pune City'],
+      'Nagpur': ['Nagpur West']
+    },
+    'Uttar Pradesh': {
+      'Lucknow': ['Lucknow Central', 'Lucknow North'],
+      'Kanpur': ['Kanpur North'],
+      'Varanasi': ['Varanasi East']
+    }
   };
   
+  // Blocks based on state
   const blocks = {
-    'Chhattisgarh': ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block', 'Raigarh Block', 'Jagdalpur Block'],
-    'Madhya Pradesh': ['Bhopal South Block', 'Indore East Block', 'Jabalpur West Block', 'Gwalior North Block', 'Ujjain East Block', 'Sagar South Block'],
-    'Maharashtra': ['Mumbai South Block', 'Pune East Block', 'Nagpur West Block', 'Thane North Block', 'Nashik South Block', 'Aurangabad East Block'],
-    'Uttar Pradesh': ['Lucknow North Block', 'Kanpur South Block', 'Varanasi East Block', 'Agra West Block', 'Prayagraj North Block', 'Ghaziabad East Block']
+    'Chhattisgarh': {
+      'Raipur': ['Raipur South Block', 'Raipur North Block'],
+      'Bilaspur': ['Bilaspur Block', 'Bilaspur Rural Block'],
+      'Durg': ['Durg Block', 'Durg Gramin Block'],
+      'Raigarh': ['Raigarh Block'],
+      'Jagdalpur': ['Jagdalpur Block'],
+      'Korba': ['Korba Block'],
+      'Rajnandgaon': ['Rajnandgaon Block'],
+      'Ambikapur': ['Ambikapur Block'],
+      'Dhamtari': ['Dhamtari Block'],
+      'Mahasamund': ['Mahasamund Block']
+    },
+    'Madhya Pradesh': {
+      'Bhopal': ['Bhopal North Block', 'Bhopal South Block'],
+      'Indore': ['Indore City Block'],
+      'Jabalpur': ['Jabalpur West Block']
+    },
+    'Maharashtra': {
+      'Mumbai': ['Mumbai South Block', 'Mumbai North Block'],
+      'Pune': ['Pune City Block'],
+      'Nagpur': ['Nagpur West Block']
+    },
+    'Uttar Pradesh': {
+      'Lucknow': ['Lucknow Central Block', 'Lucknow North Block'],
+      'Kanpur': ['Kanpur North Block'],
+      'Varanasi': ['Varanasi East Block']
+    }
   };
   
-  const panchayats = ['Gram Panchayat Rajnagar', 'Gram Panchayat Kesla', 'Gram Panchayat Patan', 'Gram Panchayat Tilda', 'Gram Panchayat Simga'];
-  const booths = ['Booth 101', 'Booth 102', 'Booth 103', 'Booth 104', 'Booth 105'];
-  const villages = ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga', 'Kurud', 'Risali', 'Bhatapara', 'Pallari', 'Khairagarh'];
+  const panchayats = ['Gram Panchayat Rajnagar', 'Gram Panchayat Kesla', 'Gram Panchayat Patan', 'Gram Panchayat Tilda', 'Gram Panchayat Simga', 'Gram Panchayat Kurud', 'Gram Panchayat Risali', 'Gram Panchayat Bhatapara'];
+  const booths = ['Booth 101', 'Booth 102', 'Booth 103', 'Booth 104', 'Booth 105', 'Booth 106', 'Booth 107', 'Booth 108'];
+  const villages = ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga', 'Kurud', 'Risali', 'Bhatapara', 'Pallari', 'Khairagarh', 'Dongargarh', 'Manpur', 'Barwahi', 'Pendra', 'Kota', 'Lormi'];
   
-  const stateConstituencies = constituencies[state] || ['Constituency 1', 'Constituency 2'];
-  const stateBlocks = blocks[state] || ['Block 1', 'Block 2'];
+  const stateConstituencies = constituencies[state]?.[district] || ['Constituency 1'];
+  const stateBlocks = blocks[state]?.[district] || ['Block 1'];
+  
+  const constituency = stateConstituencies[i % stateConstituencies.length];
+  const block = stateBlocks[i % stateBlocks.length];
+  const panchayat = panchayats[i % panchayats.length];
+  const booth = booths[i % booths.length];
+  const village = villages[i % villages.length];
   
   return {
     id: `VOT${String(1000 + i).padStart(4, '0')}`,
@@ -211,10 +879,10 @@ export const VOTERS = Array.from({ length: 500 }, (_, i) => {
     voterId: `${state.substring(0, 2).toUpperCase()}/${district.substring(0, 3).toUpperCase()}/${String(100000 + i).padStart(6, '0')}`,
     state: state,
     district: district,
-    constituency: stateConstituencies[i % stateConstituencies.length],
+    constituency: constituency,
     age: 18 + (i % 62),
     status: i % 7 === 0 ? 'Inactive' : 'Active',
-    boothNumber: booths[i % booths.length],
+    boothNumber: booth,
     caste: castes[i % castes.length],
     email: `voter${i}@gmail.com`,
     phoneNumber: `98${String(70000000 + i).slice(0, 8)}`,
@@ -223,10 +891,10 @@ export const VOTERS = Array.from({ length: 500 }, (_, i) => {
     relationName: `${firstNames[(i + 5) % firstNames.length]} ${lastNames[(i + 3) % lastNames.length]}`,
     relationType: relations[i % relations.length],
     houseNumber: `${100 + i}`,
-    village: villages[i % villages.length],
-    block: stateBlocks[i % stateBlocks.length],
-    panchayat: panchayats[i % panchayats.length],
-    pollingBooth: booths[i % booths.length],
+    village: village,
+    block: block,
+    panchayat: panchayat,
+    pollingBooth: booth,
     registeredDate: `2024-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`
   };
 });
@@ -251,32 +919,57 @@ export const DEVELOPMENT_TYPES = [
 ];
 
 // ============ DEVELOPMENT PROJECTS ============
-export const DEVELOPMENT_PROJECTS = Array.from({ length: 35 }, (_, i) => {
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'];
-  const blocks = ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block', 'Raigarh Block', 'Jagdalpur Block', 'Korba Block', 'Rajnandgaon Block'];
-  const villages = ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga', 'Kurud', 'Risali', 'Bhatapara', 'Pallari', 'Khairagarh'];
+export const DEVELOPMENT_PROJECTS = Array.from({ length: 45 }, (_, i) => {
+  const allStates = ['Chhattisgarh', 'Madhya Pradesh', 'Maharashtra', 'Uttar Pradesh'];
+  const state = allStates[i % allStates.length];
   
+  const districtsByState = {
+    'Chhattisgarh': ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'],
+    'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur'],
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+    'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi']
+  };
+  
+  const constituenciesByState = {
+    'Chhattisgarh': ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari'],
+    'Madhya Pradesh': ['Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West'],
+    'Maharashtra': ['Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West'],
+    'Uttar Pradesh': ['Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East']
+  };
+  
+  const blocksByState = {
+    'Chhattisgarh': ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block', 'Raigarh Block', 'Jagdalpur Block', 'Korba Block', 'Rajnandgaon Block'],
+    'Madhya Pradesh': ['Bhopal South Block', 'Indore East Block', 'Jabalpur West Block'],
+    'Maharashtra': ['Mumbai South Block', 'Pune East Block', 'Nagpur West Block'],
+    'Uttar Pradesh': ['Lucknow North Block', 'Kanpur South Block', 'Varanasi East Block']
+  };
+  
+  const district = districtsByState[state]?.[i % (districtsByState[state]?.length || 1)] || 'Raipur';
+  const constituency = constituenciesByState[state]?.[i % (constituenciesByState[state]?.length || 1)] || 'Raipur City South';
+  const block = blocksByState[state]?.[i % (blocksByState[state]?.length || 1)] || 'Default Block';
+  
+  const villages = ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga', 'Kurud', 'Risali', 'Bhatapara', 'Pallari', 'Khairagarh'];
   const statuses = ['Draft', 'Approved', 'In Progress', 'Completed', 'Closed', 'Delayed'];
   const fundSources = ['Government Fund', 'Personal Fund', 'Mixed'];
   const developmentTypes = DEVELOPMENT_TYPES;
-  const reps = ['Ram Vichar Netam', 'Vishnu Deo Sai', 'Brijmohan Agrawal', 'Neeraj Singh'];
+  const reps = ['Ram Vichar Netam', 'Vishnu Deo Sai', 'Brijmohan Agrawal', 'Neeraj Singh', 'Arjun Singh', 'Meena Sharma'];
   
   const target = 500 + Math.floor(Math.random() * 1500);
   const completed = Math.floor(Math.random() * target);
   const progress = Math.round((completed / target) * 100);
   
-  const isDelayed = [3, 7, 12, 18, 24, 30].includes(i % 31);
+  const isDelayed = [3, 7, 12, 18, 24, 30, 35, 40].includes(i % 45);
   const status = isDelayed ? 'Delayed' : statuses[i % statuses.length];
   
   return {
     id: `DEV${String(100 + i).padStart(3, '0')}`,
-    name: `${developmentTypes[i % developmentTypes.length]} Project - ${districts[i % districts.length]}`,
+    name: `${developmentTypes[i % developmentTypes.length]} Project - ${district}`,
     type: developmentTypes[i % developmentTypes.length],
-    description: `Development of ${developmentTypes[i % developmentTypes.length].toLowerCase()} in ${villages[i % villages.length]} village, ${districts[i % districts.length]} district.`,
-    district: districts[i % districts.length],
-    constituency: constituencies[i % constituencies.length],
-    block: blocks[i % blocks.length],
+    description: `Development of ${developmentTypes[i % developmentTypes.length].toLowerCase()} in ${villages[i % villages.length]} village, ${district} district.`,
+    state: state,
+    district: district,
+    constituency: constituency,
+    block: block,
     panchayat: ['Gram Panchayat Rajnagar', 'Gram Panchayat Kesla', 'Gram Panchayat Patan', 'Gram Panchayat Tilda'][i % 4],
     village: villages[i % villages.length],
     pollingBooth: `Booth ${100 + (i % 10)}`,
@@ -309,8 +1002,8 @@ export const COMPLAINTS = Array.from({ length: 80 }, (_, i) => {
   const statuses = ['Open', 'In Progress', 'Resolved', 'Closed'];
   const priorities = ['Critical', 'High', 'Medium', 'Low'];
   const titles = ['Road Damage', 'Street Light Issue', 'Water Supply', 'Waste Management', 'Drainage', 'Park Maintenance', 'School Building', 'Hospital Facility', 'Electricity', 'Bridge Construction', 'Bus Service', 'Market Complex'];
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
   
   return {
     id: `CMP${String(200 + i).padStart(4, '0')}`,
@@ -322,7 +1015,7 @@ export const COMPLAINTS = Array.from({ length: 80 }, (_, i) => {
     submittedBy: ['Ravi', 'Anita', 'Suresh', 'Jyoti', 'Prakash', 'Deepak', 'Sunita', 'Ramesh', 'Kavita', 'Sanjay'][i % 10],
     location: ['Sector 12', 'Old City', 'Industrial Area', 'Residential Zone', 'Market', 'Village', 'Township'][i % 7],
     progress: Math.floor(Math.random() * 100),
-    district: districts[i % districts.length],
+    district: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length],
     block: ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block'][i % 4],
     village: ['Rajnagar', 'Kesla', 'Patan', 'Tilda', 'Simga'][i % 5],
@@ -335,8 +1028,8 @@ export const COMPLAINTS = Array.from({ length: 80 }, (_, i) => {
 export const MEETINGS = Array.from({ length: 40 }, (_, i) => {
   const purposes = ['Development Discussion', 'Infrastructure Review', 'Health Planning', 'Education Meeting', 'Employment Strategy', 'Water Management', 'Road Construction', 'Housing Scheme', 'Sanitation Drive', 'Agriculture Planning'];
   const statuses = ['Pending', 'Scheduled', 'Completed', 'Rescheduled', 'Cancelled'];
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
   
   return {
     id: `MTG${String(400 + i).padStart(4, '0')}`,
@@ -346,8 +1039,8 @@ export const MEETINGS = Array.from({ length: 40 }, (_, i) => {
     scheduledDate: `2024-${String(1 + (i % 12)).padStart(2, '0')}-${String(15 + (i % 13)).padStart(2, '0')}`,
     status: statuses[i % statuses.length],
     priority: ['High', 'Medium', 'Low', 'Urgent'][i % 4],
-    location: districts[i % districts.length],
-    district: districts[i % districts.length],
+    location: allDistricts[i % allDistricts.length],
+    district: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length],
     block: ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block'][i % 4],
     voterId: `CG/RAI/${String(100000 + i).padStart(6, '0')}`,
@@ -441,70 +1134,19 @@ export const SCHEMES = [
     district: 'All Districts',
     party: 'BJP',
     image: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=600&h=400&fit=crop'
-  },
-  {
-    id: 'sch6',
-    name: 'Har Ghar Jal Yojana',
-    category: 'Water',
-    department: 'PHE',
-    status: 'Active',
-    launchDate: '2024-01-01',
-    beneficiaries: 15000,
-    targetBeneficiaries: 25000,
-    budget: 85000000,
-    allocated: 51000000,
-    progress: 60,
-    description: 'Tap water connection to every household in rural areas.',
-    district: 'Raipur, Bilaspur, Durg',
-    party: 'BJP',
-    image: 'https://images.unsplash.com/photo-1564135624576-c5c88640f235?w=600&h=400&fit=crop'
-  },
-  {
-    id: 'sch7',
-    name: 'Smart City Mission',
-    category: 'Urban Development',
-    department: 'Urban Administration',
-    status: 'Active',
-    launchDate: '2023-02-15',
-    beneficiaries: 120000,
-    targetBeneficiaries: 150000,
-    budget: 680000000,
-    allocated: 489600000,
-    progress: 72,
-    description: 'Smart infrastructure in urban areas.',
-    district: 'Raipur',
-    party: 'BJP',
-    image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop'
-  },
-  {
-    id: 'sch8',
-    name: 'PM Awas Yojana',
-    category: 'Housing',
-    department: 'Housing',
-    status: 'Active',
-    launchDate: '2015-06-25',
-    beneficiaries: 85000,
-    targetBeneficiaries: 100000,
-    budget: 350000000,
-    allocated: 297500000,
-    progress: 85,
-    description: 'Housing for all by 2024.',
-    district: 'All Districts',
-    party: 'BJP',
-    image: 'https://images.unsplash.com/photo-1576941089069-8d2d71702df5?w=600&h=400&fit=crop'
   }
 ];
 
 // ============ FUNDING ============
 export const FUNDING = Array.from({ length: 35 }, (_, i) => {
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
   const projects = ['Har Ghar Jal', 'Road Construction', 'School Building', 'Hospital', 'Drainage', 'Electricity', 'Street Lights', 'Community Center'];
   const sources = ['Government Fund', 'Personal Fund', 'Mixed'];
   
   return {
     id: `FUND${String(500 + i).padStart(4, '0')}`,
-    projectName: `${projects[i % projects.length]} - ${districts[i % districts.length]}`,
+    projectName: `${projects[i % projects.length]} - ${allDistricts[i % allDistricts.length]}`,
     fundSource: sources[i % sources.length],
     governmentAmount: (i + 1) * 1000000 + Math.floor(Math.random() * 2000000),
     personalAmount: Math.floor(Math.random() * 500000),
@@ -512,7 +1154,7 @@ export const FUNDING = Array.from({ length: 35 }, (_, i) => {
     allocated: (i + 1) * 1000000 + Math.floor(Math.random() * 2000000),
     utilized: (i + 1) * 600000 + Math.floor(Math.random() * 1500000),
     utilization: Math.floor(40 + Math.random() * 55),
-    district: districts[i % districts.length],
+    district: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length],
     block: ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block'][i % 4],
     status: ['Active', 'Completed', 'Under Review', 'Approved'][i % 4],
@@ -532,8 +1174,8 @@ export const REGISTRATIONS = Array.from({ length: 50 }, (_, i) => {
   const firstNames = ['Anjali', 'Ramesh', 'Sunita', 'Rajesh', 'Priyanka', 'Vijay', 'Sanjana', 'Deepak', 'Neha', 'Amit', 'Pooja', 'Kiran', 'Manoj', 'Jyoti', 'Sanjay'];
   const lastNames = ['Kumari', 'Singh', 'Patel', 'Verma', 'Sharma', 'Yadav', 'Gupta', 'Joshi', 'Malik', 'Reddy'];
   const statuses = ['Pending', 'Approved', 'Rejected'];
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
   
   return {
     id: `REG${String(900 + i).padStart(4, '0')}`,
@@ -544,13 +1186,13 @@ export const REGISTRATIONS = Array.from({ length: 50 }, (_, i) => {
     registrationDate: `2024-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`,
     status: statuses[i % statuses.length],
     wantsVolunteer: i % 5 === 0 || i % 7 === 0,
-    district: districts[i % districts.length],
+    district: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length],
     block: ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block'][i % 4],
     age: 22 + (i % 45),
     gender: ['Male', 'Female', 'Other'][i % 3],
     occupation: ['Student', 'Farmer', 'Teacher', 'Business', 'Professional', 'Healthcare', 'Engineer', 'Govt Service'][i % 8],
-    voterId: `CG/${districts[i % districts.length].substring(0,3).toUpperCase()}/${String(100000 + i).padStart(6, '0')}`
+    voterId: `CG/${allDistricts[i % allDistricts.length].substring(0,3).toUpperCase()}/${String(100000 + i).padStart(6, '0')}`
   };
 });
 
@@ -560,8 +1202,8 @@ export const VOLUNTEERS = Array.from({ length: 45 }, (_, i) => {
   const lastNames = ['Sharma', 'Patel', 'Verma', 'Reddy', 'Singh', 'Kumar', 'Yadav', 'Joshi'];
   const skills = ['Community Work', 'Teaching', 'Health Worker', 'Agricultural Expert', 'IT Professional', 'Social Worker'];
   const statuses = ['Pending', 'Active', 'Inactive'];
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
   
   return {
     id: `VOL${String(300 + i).padStart(4, '0')}`,
@@ -570,12 +1212,12 @@ export const VOLUNTEERS = Array.from({ length: 45 }, (_, i) => {
     email: `volunteer${i}@gmail.com`,
     joinDate: `2024-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`,
     status: statuses[i % statuses.length],
-    area: districts[i % districts.length],
+    area: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length],
     block: ['Raipur South Block', 'Raipur North Block', 'Bilaspur Block', 'Durg Block'][i % 4],
     tasksAssigned: Math.floor(Math.random() * 6) + 1,
     skills: skills[i % skills.length],
-    voterId: `CG/${districts[i % districts.length].substring(0,3).toUpperCase()}/${String(100000 + i).padStart(6, '0')}`,
+    voterId: `CG/${allDistricts[i % allDistricts.length].substring(0,3).toUpperCase()}/${String(100000 + i).padStart(6, '0')}`,
     registrationId: `REG${String(900 + i).padStart(4, '0')}`
   };
 });
@@ -591,7 +1233,8 @@ export const NEWS = [
     importance: 'High',
     image: 'https://indianmasterminds.com/wp-content/uploads/2026/04/cm-sai.jpg',
     summary: 'Chief Minister Vishnu Deo Sai inaugurated a state-of-the-art 100-bed hospital in Raipur, providing advanced healthcare facilities to citizens.',
-    district: 'Raipur'
+    district: 'Raipur',
+    state: 'Chhattisgarh'
   },
   {
     id: 'news2',
@@ -602,7 +1245,8 @@ export const NEWS = [
     importance: 'High',
     image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop',
     summary: 'Under the Mukhyamantri Vriksha Sampada Yojana, Chhattisgarh has recorded a significant 45% increase in forest cover over the past year.',
-    district: 'Surguja'
+    district: 'Surguja',
+    state: 'Chhattisgarh'
   },
   {
     id: 'news3',
@@ -613,7 +1257,8 @@ export const NEWS = [
     importance: 'High',
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop',
     summary: 'The innovative Godhan Nyay Yojana has benefited 45,000 farmers in Chhattisgarh, promoting organic farming and rural livelihoods.',
-    district: 'Balod'
+    district: 'Balod',
+    state: 'Chhattisgarh'
   },
   {
     id: 'news4',
@@ -624,7 +1269,32 @@ export const NEWS = [
     importance: 'High',
     image: 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/202505/raipur-to-host-indias-first-ai-based-data-park-key-details-inside-ai-generated-imagecanva-050155330-16x9_0.jpg?VersionId=HukQteYFFuDcMrrICpsVAoHLgxjpbI2c',
     summary: 'Nava Raipur is set to become India\'s first city with an AI-driven intelligent traffic management system, reducing congestion by 40%.',
-    district: 'Raipur'
+    district: 'Raipur',
+    state: 'Chhattisgarh'
+  },
+  {
+    id: 'news5',
+    title: 'Madhya Pradesh Launches New Industrial Policy 2024',
+    category: 'Industry',
+    publishDate: '2024-06-05',
+    source: 'Business Standard',
+    importance: 'High',
+    image: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=600&h=400&fit=crop',
+    summary: 'Madhya Pradesh government announced a new industrial policy with incentives to boost manufacturing and create jobs.',
+    district: 'Bhopal',
+    state: 'Madhya Pradesh'
+  },
+  {
+    id: 'news6',
+    title: 'Maharashtra to Get 5 New Smart Cities',
+    category: 'Urban Development',
+    publishDate: '2024-06-01',
+    source: 'The Hindu',
+    importance: 'High',
+    image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop',
+    summary: 'Maharashtra government announced 5 new smart cities in the state with an investment of Rs. 10,000 crore.',
+    district: 'Mumbai',
+    state: 'Maharashtra'
   }
 ];
 
@@ -632,22 +1302,24 @@ export const NEWS = [
 export const NOTIFICATIONS = Array.from({ length: 50 }, (_, i) => {
   const titles = ['New Complaint Registered', 'Meeting Scheduled', 'Scheme Progress Update', 'Fund Allocation Approved', 'Project Milestone Achieved', 'News Published', 'Volunteer Registration', 'Jan Sabha Announced', 'Policy Change', 'Infrastructure Update'];
   const types = ['Info', 'Success', 'Warning', 'Alert'];
-  const districts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur'];
-  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon'];
+  const allDistricts = ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal', 'Indore', 'Jabalpur', 'Mumbai', 'Pune', 'Nagpur', 'Lucknow', 'Kanpur', 'Varanasi'];
+  const constituencies = ['Raipur City South', 'Raipur City North', 'Bilaspur', 'Durg City', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund', 'Bhopal North', 'Bhopal South', 'Indore City', 'Jabalpur West', 'Mumbai South', 'Mumbai North', 'Pune City', 'Nagpur West', 'Lucknow Central', 'Lucknow North', 'Kanpur North', 'Varanasi East'];
+  const states = ['Chhattisgarh', 'Madhya Pradesh', 'Maharashtra', 'Uttar Pradesh'];
   
   return {
     id: `NOTIF${String(700 + i).padStart(4, '0')}`,
     title: titles[i % titles.length],
-    message: `This is a notification about development activity in ${districts[i % districts.length]} district.`,
+    message: `This is a notification about development activity in ${allDistricts[i % allDistricts.length]} district.`,
     type: types[i % types.length],
     date: `2024-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`,
     read: i % 4 === 0 ? false : true,
-    district: districts[i % districts.length],
+    state: states[i % states.length],
+    district: allDistricts[i % allDistricts.length],
     constituency: constituencies[i % constituencies.length]
   };
 });
 
-// ============ JANSABHA (Public Meetings) ============
+// ============ JANSABHA ============
 export const JANSABHA = [
   {
     id: 'js1',
@@ -660,6 +1332,7 @@ export const JANSABHA = [
     district: 'Raipur',
     constituency: 'Raipur City South',
     block: 'Raipur South Block',
+    state: 'Chhattisgarh',
     image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=400&fit=crop',
     agenda: [
       { 
@@ -703,6 +1376,7 @@ export const JANSABHA = [
     district: 'Raipur',
     constituency: 'Raipur City South',
     block: 'Raipur South Block',
+    state: 'Chhattisgarh',
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=400&fit=crop',
     agenda: [
       { 
@@ -778,9 +1452,9 @@ export const getStates = () => {
 export const getDistricts = (state) => {
   const stateDistricts = {
     'Chhattisgarh': ['Raipur', 'Bilaspur', 'Durg', 'Raigarh', 'Jagdalpur', 'Korba', 'Rajnandgaon', 'Ambikapur', 'Dhamtari', 'Mahasamund'],
-    'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Rewa', 'Satna', 'Katni', 'Chhindwara'],
-    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur', 'Sangli'],
-    'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi', 'Agra', 'Prayagraj', 'Ghaziabad', 'Noida', 'Meerut', 'Aligarh', 'Bareilly']
+    'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur'],
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+    'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi']
   };
   if (!state) return [];
   return stateDistricts[state] || [];
@@ -793,54 +1467,33 @@ export const getAssemblyConstituencies = (state, district) => {
       'Raipur': ['Raipur City South', 'Raipur City North'],
       'Bilaspur': ['Bilaspur City', 'Bilaspur Rural'],
       'Durg': ['Durg City', 'Durg Gramin'],
-      'Raigarh': ['Raigarh City', 'Raigarh Rural'],
-      'Jagdalpur': ['Jagdalpur City', 'Jagdalpur Rural'],
-      'Korba': ['Korba City', 'Korba Rural'],
-      'Rajnandgaon': ['Rajnandgaon City', 'Rajnandgaon Rural'],
-      'Ambikapur': ['Ambikapur City', 'Ambikapur Rural'],
-      'Dhamtari': ['Dhamtari City', 'Dhamtari Rural'],
-      'Mahasamund': ['Mahasamund City', 'Mahasamund Rural']
+      'Raigarh': ['Raigarh City'],
+      'Jagdalpur': ['Jagdalpur City'],
+      'Korba': ['Korba City'],
+      'Rajnandgaon': ['Rajnandgaon City'],
+      'Ambikapur': ['Ambikapur City'],
+      'Dhamtari': ['Dhamtari City'],
+      'Mahasamund': ['Mahasamund City']
     },
     'Madhya Pradesh': {
       'Bhopal': ['Bhopal North', 'Bhopal South'],
-      'Indore': ['Indore City', 'Indore Rural'],
-      'Jabalpur': ['Jabalpur West', 'Jabalpur East'],
-      'Gwalior': ['Gwalior East', 'Gwalior West'],
-      'Ujjain': ['Ujjain North', 'Ujjain South'],
-      'Sagar': ['Sagar City', 'Sagar Rural'],
-      'Rewa': ['Rewa East', 'Rewa West'],
-      'Satna': ['Satna North', 'Satna South'],
-      'Katni': ['Katni City', 'Katni Rural'],
-      'Chhindwara': ['Chhindwara City', 'Chhindwara Rural']
+      'Indore': ['Indore City'],
+      'Jabalpur': ['Jabalpur West']
     },
     'Maharashtra': {
-      'Mumbai': ['Mumbai South', 'Mumbai North', 'Mumbai East', 'Mumbai West'],
-      'Pune': ['Pune City', 'Pune Rural', 'Pune East', 'Pune West'],
-      'Nagpur': ['Nagpur West', 'Nagpur East', 'Nagpur North', 'Nagpur South'],
-      'Thane': ['Thane City', 'Thane Rural'],
-      'Nashik': ['Nashik Central', 'Nashik East'],
-      'Aurangabad': ['Aurangabad North', 'Aurangabad South'],
-      'Solapur': ['Solapur City', 'Solapur Rural'],
-      'Amravati': ['Amravati City', 'Amravati Rural'],
-      'Kolhapur': ['Kolhapur City', 'Kolhapur Rural'],
-      'Sangli': ['Sangli City', 'Sangli Rural']
+      'Mumbai': ['Mumbai South', 'Mumbai North'],
+      'Pune': ['Pune City'],
+      'Nagpur': ['Nagpur West']
     },
     'Uttar Pradesh': {
-      'Lucknow': ['Lucknow Central', 'Lucknow North', 'Lucknow South', 'Lucknow East'],
-      'Kanpur': ['Kanpur North', 'Kanpur South', 'Kanpur East', 'Kanpur West'],
-      'Varanasi': ['Varanasi East', 'Varanasi West', 'Varanasi North', 'Varanasi South'],
-      'Agra': ['Agra West', 'Agra East', 'Agra North'],
-      'Prayagraj': ['Prayagraj South', 'Prayagraj North'],
-      'Ghaziabad': ['Ghaziabad City', 'Ghaziabad Rural'],
-      'Noida': ['Noida East', 'Noida West'],
-      'Meerut': ['Meerut West', 'Meerut East'],
-      'Aligarh': ['Aligarh North', 'Aligarh South'],
-      'Bareilly': ['Bareilly City', 'Bareilly Rural']
+      'Lucknow': ['Lucknow Central', 'Lucknow North'],
+      'Kanpur': ['Kanpur North'],
+      'Varanasi': ['Varanasi East']
     }
   };
   
   if (!state || !district) return [];
-  return assemblyMap[state]?.[district] || ['Assembly 1', 'Assembly 2'];
+  return assemblyMap[state]?.[district] || ['Assembly 1'];
 };
 
 // Get blocks for a state, district, and assembly constituency
@@ -848,93 +1501,174 @@ export const getBlocks = (state, district, assembly) => {
   const blockMap = {
     'Chhattisgarh': {
       'Raipur': {
-        'Raipur City South': ['Raipur South Block 1', 'Raipur South Block 2'],
-        'Raipur City North': ['Raipur North Block 1', 'Raipur North Block 2']
+        'Raipur City South': ['Raipur South Block'],
+        'Raipur City North': ['Raipur North Block']
       },
       'Bilaspur': {
-        'Bilaspur City': ['Bilaspur Block 1', 'Bilaspur Block 2'],
-        'Bilaspur Rural': ['Bilaspur Rural Block 1', 'Bilaspur Rural Block 2']
+        'Bilaspur City': ['Bilaspur Block'],
+        'Bilaspur Rural': ['Bilaspur Rural Block']
       },
       'Durg': {
-        'Durg City': ['Durg Block 1', 'Durg Block 2'],
-        'Durg Gramin': ['Durg Gramin Block 1', 'Durg Gramin Block 2']
+        'Durg City': ['Durg Block'],
+        'Durg Gramin': ['Durg Gramin Block']
+      },
+      'Raigarh': {
+        'Raigarh City': ['Raigarh Block']
+      },
+      'Jagdalpur': {
+        'Jagdalpur City': ['Jagdalpur Block']
+      },
+      'Korba': {
+        'Korba City': ['Korba Block']
+      },
+      'Rajnandgaon': {
+        'Rajnandgaon City': ['Rajnandgaon Block']
+      },
+      'Ambikapur': {
+        'Ambikapur City': ['Ambikapur Block']
+      },
+      'Dhamtari': {
+        'Dhamtari City': ['Dhamtari Block']
+      },
+      'Mahasamund': {
+        'Mahasamund City': ['Mahasamund Block']
       }
     },
     'Madhya Pradesh': {
       'Bhopal': {
-        'Bhopal North': ['Bhopal North Block 1', 'Bhopal North Block 2'],
-        'Bhopal South': ['Bhopal South Block 1', 'Bhopal South Block 2']
+        'Bhopal North': ['Bhopal North Block'],
+        'Bhopal South': ['Bhopal South Block']
       },
       'Indore': {
-        'Indore City': ['Indore City Block 1', 'Indore City Block 2'],
-        'Indore Rural': ['Indore Rural Block 1', 'Indore Rural Block 2']
+        'Indore City': ['Indore City Block']
+      },
+      'Jabalpur': {
+        'Jabalpur West': ['Jabalpur West Block']
       }
     },
     'Maharashtra': {
       'Mumbai': {
-        'Mumbai South': ['Mumbai South Block 1', 'Mumbai South Block 2'],
-        'Mumbai North': ['Mumbai North Block 1', 'Mumbai North Block 2']
+        'Mumbai South': ['Mumbai South Block'],
+        'Mumbai North': ['Mumbai North Block']
       },
       'Pune': {
-        'Pune City': ['Pune City Block 1', 'Pune City Block 2'],
-        'Pune Rural': ['Pune Rural Block 1', 'Pune Rural Block 2']
+        'Pune City': ['Pune City Block']
+      },
+      'Nagpur': {
+        'Nagpur West': ['Nagpur West Block']
       }
     },
     'Uttar Pradesh': {
       'Lucknow': {
-        'Lucknow Central': ['Lucknow Central Block 1', 'Lucknow Central Block 2'],
-        'Lucknow North': ['Lucknow North Block 1', 'Lucknow North Block 2']
+        'Lucknow Central': ['Lucknow Central Block'],
+        'Lucknow North': ['Lucknow North Block']
       },
       'Kanpur': {
-        'Kanpur North': ['Kanpur North Block 1', 'Kanpur North Block 2'],
-        'Kanpur South': ['Kanpur South Block 1', 'Kanpur South Block 2']
+        'Kanpur North': ['Kanpur North Block']
+      },
+      'Varanasi': {
+        'Varanasi East': ['Varanasi East Block']
       }
     }
   };
   
   if (!state || !district || !assembly) return [];
-  return blockMap[state]?.[district]?.[assembly] || ['Default Block 1', 'Default Block 2'];
+  return blockMap[state]?.[district]?.[assembly] || ['Default Block'];
 };
 
-// Get panchayats for a state, district, assembly, and block
+// Get panchayats
 export const getPanchayats = (state, district, assembly, block) => {
   const panchayatMap = {
-    'Raipur South Block 1': ['Gram Panchayat Rajnagar', 'Gram Panchayat Kesla'],
-    'Raipur South Block 2': ['Gram Panchayat Patan', 'Gram Panchayat Tilda'],
-    'Raipur North Block 1': ['Gram Panchayat Simga', 'Gram Panchayat Kurud'],
-    'Raipur North Block 2': ['Gram Panchayat Risali', 'Gram Panchayat Bhatapara'],
-    'Bilaspur Block 1': ['Gram Panchayat Bilaspur', 'Gram Panchayat Ratanpur'],
-    'Bilaspur Block 2': ['Gram Panchayat Kota', 'Gram Panchayat Lormi'],
-    'Durg Block 1': ['Gram Panchayat Durg', 'Gram Panchayat Bhilai'],
-    'Durg Block 2': ['Gram Panchayat Risali', 'Gram Panchayat Durg Gramin']
+    'Raipur South Block': ['Gram Panchayat Rajnagar', 'Gram Panchayat Kesla'],
+    'Raipur North Block': ['Gram Panchayat Simga', 'Gram Panchayat Kurud'],
+    'Bilaspur Block': ['Gram Panchayat Bilaspur', 'Gram Panchayat Ratanpur'],
+    'Bilaspur Rural Block': ['Gram Panchayat Lormi', 'Gram Panchayat Mungeli'],
+    'Durg Block': ['Gram Panchayat Durg', 'Gram Panchayat Bhilai'],
+    'Durg Gramin Block': ['Gram Panchayat Dongargarh', 'Gram Panchayat Manpur'],
+    'Raigarh Block': ['Gram Panchayat Raigarh', 'Gram Panchayat Sakti'],
+    'Jagdalpur Block': ['Gram Panchayat Jagdalpur', 'Gram Panchayat Bastar'],
+    'Korba Block': ['Gram Panchayat Korba', 'Gram Panchayat Katghora'],
+    'Rajnandgaon Block': ['Gram Panchayat Rajnandgaon', 'Gram Panchayat Dongargaon'],
+    'Ambikapur Block': ['Gram Panchayat Ambikapur', 'Gram Panchayat Surguja'],
+    'Dhamtari Block': ['Gram Panchayat Dhamtari', 'Gram Panchayat Kurud'],
+    'Mahasamund Block': ['Gram Panchayat Mahasamund', 'Gram Panchayat Saraipali'],
+    'Bhopal North Block': ['Gram Panchayat Bhopal North', 'Gram Panchayat Kolar'],
+    'Bhopal South Block': ['Gram Panchayat Bhopal South', 'Gram Panchayat Sehore'],
+    'Indore City Block': ['Gram Panchayat Indore', 'Gram Panchayat Rau'],
+    'Jabalpur West Block': ['Gram Panchayat Jabalpur', 'Gram Panchayat Katni'],
+    'Mumbai South Block': ['Gram Panchayat Mumbai South', 'Gram Panchayat Colaba'],
+    'Mumbai North Block': ['Gram Panchayat Mumbai North', 'Gram Panchayat Andheri'],
+    'Pune City Block': ['Gram Panchayat Pune', 'Gram Panchayat Kothrud'],
+    'Nagpur West Block': ['Gram Panchayat Nagpur', 'Gram Panchayat Wardha'],
+    'Lucknow Central Block': ['Gram Panchayat Lucknow Central', 'Gram Panchayat Gomti Nagar'],
+    'Lucknow North Block': ['Gram Panchayat Lucknow North', 'Gram Panchayat Hazratganj'],
+    'Kanpur North Block': ['Gram Panchayat Kanpur', 'Gram Panchayat Unnao'],
+    'Varanasi East Block': ['Gram Panchayat Varanasi', 'Gram Panchayat Sarnath']
   };
   
   if (!block) return [];
-  return panchayatMap[block] || ['Gram Panchayat Default 1', 'Gram Panchayat Default 2'];
+  return panchayatMap[block] || ['Gram Panchayat Default'];
 };
 
-// Get polling booths for a state, district, assembly, block, and panchayat
+// Get polling booths
 export const getPollingBooths = (state, district, assembly, block, panchayat) => {
   const boothMap = {
-    'Gram Panchayat Rajnagar': ['Booth 101', 'Booth 102', 'Booth 103'],
-    'Gram Panchayat Kesla': ['Booth 104', 'Booth 105', 'Booth 106'],
-    'Gram Panchayat Patan': ['Booth 107', 'Booth 108'],
-    'Gram Panchayat Tilda': ['Booth 109', 'Booth 110'],
-    'Gram Panchayat Simga': ['Booth 111', 'Booth 112'],
-    'Gram Panchayat Kurud': ['Booth 113', 'Booth 114'],
-    'Gram Panchayat Risali': ['Booth 115', 'Booth 116'],
-    'Gram Panchayat Bhatapara': ['Booth 117', 'Booth 118'],
+    'Gram Panchayat Rajnagar': ['Booth 101', 'Booth 102'],
+    'Gram Panchayat Kesla': ['Booth 103', 'Booth 104'],
+    'Gram Panchayat Simga': ['Booth 105', 'Booth 106'],
+    'Gram Panchayat Kurud': ['Booth 107', 'Booth 108'],
     'Gram Panchayat Bilaspur': ['Booth 201', 'Booth 202'],
     'Gram Panchayat Ratanpur': ['Booth 203', 'Booth 204'],
-    'Gram Panchayat Kota': ['Booth 205', 'Booth 206'],
-    'Gram Panchayat Lormi': ['Booth 207', 'Booth 208']
+    'Gram Panchayat Lormi': ['Booth 205', 'Booth 206'],
+    'Gram Panchayat Mungeli': ['Booth 207', 'Booth 208'],
+    'Gram Panchayat Durg': ['Booth 301', 'Booth 302'],
+    'Gram Panchayat Bhilai': ['Booth 303', 'Booth 304'],
+    'Gram Panchayat Dongargarh': ['Booth 305', 'Booth 306'],
+    'Gram Panchayat Manpur': ['Booth 307', 'Booth 308'],
+    'Gram Panchayat Raigarh': ['Booth 401', 'Booth 402'],
+    'Gram Panchayat Sakti': ['Booth 403', 'Booth 404'],
+    'Gram Panchayat Jagdalpur': ['Booth 501', 'Booth 502'],
+    'Gram Panchayat Bastar': ['Booth 503', 'Booth 504'],
+    'Gram Panchayat Korba': ['Booth 601', 'Booth 602'],
+    'Gram Panchayat Katghora': ['Booth 603', 'Booth 604'],
+    'Gram Panchayat Rajnandgaon': ['Booth 701', 'Booth 702'],
+    'Gram Panchayat Dongargaon': ['Booth 703', 'Booth 704'],
+    'Gram Panchayat Ambikapur': ['Booth 801', 'Booth 802'],
+    'Gram Panchayat Surguja': ['Booth 803', 'Booth 804'],
+    'Gram Panchayat Dhamtari': ['Booth 901', 'Booth 902'],
+    'Gram Panchayat Mahasamund': ['Booth 1001', 'Booth 1002'],
+    'Gram Panchayat Saraipali': ['Booth 1003', 'Booth 1004'],
+    'Gram Panchayat Bhopal North': ['Booth MP-101', 'Booth MP-102'],
+    'Gram Panchayat Kolar': ['Booth MP-103', 'Booth MP-104'],
+    'Gram Panchayat Bhopal South': ['Booth MP-105', 'Booth MP-106'],
+    'Gram Panchayat Sehore': ['Booth MP-107', 'Booth MP-108'],
+    'Gram Panchayat Indore': ['Booth MP-201', 'Booth MP-202'],
+    'Gram Panchayat Rau': ['Booth MP-203', 'Booth MP-204'],
+    'Gram Panchayat Jabalpur': ['Booth MP-301', 'Booth MP-302'],
+    'Gram Panchayat Katni': ['Booth MP-303', 'Booth MP-304'],
+    'Gram Panchayat Mumbai South': ['Booth MH-101', 'Booth MH-102'],
+    'Gram Panchayat Colaba': ['Booth MH-103', 'Booth MH-104'],
+    'Gram Panchayat Mumbai North': ['Booth MH-105', 'Booth MH-106'],
+    'Gram Panchayat Andheri': ['Booth MH-107', 'Booth MH-108'],
+    'Gram Panchayat Pune': ['Booth MH-201', 'Booth MH-202'],
+    'Gram Panchayat Kothrud': ['Booth MH-203', 'Booth MH-204'],
+    'Gram Panchayat Nagpur': ['Booth MH-301', 'Booth MH-302'],
+    'Gram Panchayat Wardha': ['Booth MH-303', 'Booth MH-304'],
+    'Gram Panchayat Lucknow Central': ['Booth UP-101', 'Booth UP-102'],
+    'Gram Panchayat Gomti Nagar': ['Booth UP-103', 'Booth UP-104'],
+    'Gram Panchayat Lucknow North': ['Booth UP-105', 'Booth UP-106'],
+    'Gram Panchayat Hazratganj': ['Booth UP-107', 'Booth UP-108'],
+    'Gram Panchayat Kanpur': ['Booth UP-201', 'Booth UP-202'],
+    'Gram Panchayat Unnao': ['Booth UP-203', 'Booth UP-204'],
+    'Gram Panchayat Varanasi': ['Booth UP-301', 'Booth UP-302'],
+    'Gram Panchayat Sarnath': ['Booth UP-303', 'Booth UP-304']
   };
   
   if (!panchayat) return [];
-  return boothMap[panchayat] || ['Booth 101', 'Booth 102'];
+  return boothMap[panchayat] || ['Booth 101'];
 };
 
-// Get villages for a state, district, assembly, block, panchayat, and booth
+// Get villages
 export const getVillages = (state, district, assembly, block, panchayat, booth) => {
   const villageMap = {
     'Booth 101': ['Rajnagar', 'Kesla'],
@@ -948,11 +1682,47 @@ export const getVillages = (state, district, assembly, block, panchayat, booth) 
     'Booth 201': ['Bilaspur City', 'Ratanpur'],
     'Booth 202': ['Kota', 'Mungeli'],
     'Booth 203': ['Janjgir', 'Champa'],
-    'Booth 204': ['Sakti', 'Akaltara']
+    'Booth 204': ['Sakti', 'Akaltara'],
+    'Booth 301': ['Durg City', 'Bhilai'],
+    'Booth 302': ['Risali', 'Bhatapara'],
+    'Booth 303': ['Dongargarh', 'Manpur'],
+    'Booth 304': ['Barwahi', 'Pendra'],
+    'Booth 401': ['Raigarh City', 'Sakti'],
+    'Booth 402': ['Akaltara', 'Janjgir'],
+    'Booth 501': ['Jagdalpur City', 'Bastar'],
+    'Booth 502': ['Kondagaon', 'Narayanpur'],
+    'Booth 601': ['Korba City', 'Katghora'],
+    'Booth 602': ['Pali', 'Rampur'],
+    'Booth 701': ['Rajnandgaon City', 'Dongargaon'],
+    'Booth 702': ['Khujji', 'Mohla'],
+    'Booth 801': ['Ambikapur City', 'Surguja'],
+    'Booth 802': ['Lundra', 'Samri'],
+    'Booth 901': ['Dhamtari City', 'Kurud'],
+    'Booth 902': ['Sihawa', 'Risali'],
+    'Booth 1001': ['Mahasamund City', 'Saraipali'],
+    'Booth 1002': ['Basna', 'Khallari'],
+    'Booth MP-101': ['Bhopal City', 'Kolar'],
+    'Booth MP-102': ['Berasia', 'Sehore'],
+    'Booth MP-201': ['Indore City', 'Rau'],
+    'Booth MP-202': ['Depalpur', 'Sanwer'],
+    'Booth MP-301': ['Jabalpur City', 'Katni'],
+    'Booth MP-302': ['Rewa', 'Satna'],
+    'Booth MH-101': ['Mumbai City', 'Colaba'],
+    'Booth MH-102': ['Worli', 'Bandra'],
+    'Booth MH-201': ['Pune City', 'Kothrud'],
+    'Booth MH-202': ['Pimpri', 'Chinchwad'],
+    'Booth MH-301': ['Nagpur City', 'Wardha'],
+    'Booth MH-302': ['Bhandara', 'Gondia'],
+    'Booth UP-101': ['Lucknow City', 'Gomti Nagar'],
+    'Booth UP-102': ['Aliganj', 'Hazratganj'],
+    'Booth UP-201': ['Kanpur City', 'Unnao'],
+    'Booth UP-202': ['Bithoor', 'Kalyanpur'],
+    'Booth UP-301': ['Varanasi City', 'Sarnath'],
+    'Booth UP-302': ['Ramnagar', 'Chandauli']
   };
   
   if (!booth) return [];
-  return villageMap[booth] || ['Village 1', 'Village 2'];
+  return villageMap[booth] || ['Village 1'];
 };
 
 // ============ DASHBOARD STATS ============
@@ -980,6 +1750,13 @@ export const getDashboardStats = () => {
   const totalAudits = AUDIT_REPORTS.length;
   const delayedProjects = DEVELOPMENT_PROJECTS.filter(p => p.status === 'Delayed' || (p.status === 'In Progress' && p.progress < 30)).length;
   
+  const stateProjects = {};
+  DEVELOPMENT_PROJECTS.forEach(p => {
+    const state = p.state || 'Chhattisgarh';
+    if (!stateProjects[state]) stateProjects[state] = 0;
+    stateProjects[state]++;
+  });
+  
   return {
     totalVoters,
     activeVoters,
@@ -1002,6 +1779,64 @@ export const getDashboardStats = () => {
     pendingVolunteers,
     totalSurveys,
     totalAudits,
-    delayedProjects
+    delayedProjects,
+    stateProjects
   };
+};
+
+// ============ RBAC HELPER FUNCTIONS ============
+
+// Check if user can access a specific page
+export const canAccessPage = (user, page) => {
+  if (!user) return false;
+  
+  const role = user.role;
+  
+  // Pages restricted from users (citizens)
+  const restrictedForUsers = ['voters', 'funding', 'jansabha', 'volunteers', 'registrations', 'notifications', 'meetings'];
+  
+  // Users (citizens) cannot access restricted pages
+  if (role === 'USER') {
+    if (restrictedForUsers.includes(page)) return false;
+    return true;
+  }
+  
+  // All other roles can access everything
+  return true;
+};
+
+// Check if user can update/delete (write operations) - Users cannot write
+export const canWrite = (user) => {
+  if (!user) return false;
+  return user.role !== 'USER';
+};
+
+// Get users by role
+export const getUsersByRole = (role) => {
+  return USERS.filter(u => u.role === role);
+};
+
+// Get ministers
+export const getMinisters = () => {
+  return USERS.filter(u => u.role === 'Minister');
+};
+
+// Get projects by state
+export const getProjectsByState = (state) => {
+  return DEVELOPMENT_PROJECTS.filter(p => p.state === state);
+};
+
+// Get projects by district
+export const getProjectsByDistrict = (district) => {
+  return DEVELOPMENT_PROJECTS.filter(p => p.district === district);
+};
+
+// Get projects by constituency
+export const getProjectsByConstituency = (constituency) => {
+  return DEVELOPMENT_PROJECTS.filter(p => p.constituency === constituency);
+};
+
+// Get projects by minister
+export const getProjectsByMinister = (ministerName) => {
+  return DEVELOPMENT_PROJECTS.filter(p => p.createdBy === ministerName);
 };
