@@ -25,16 +25,23 @@ import {
   Printer,
   Edit,
   Save,
-  X
+  X,
+  Image as ImageIcon,
+  Video,
+  Upload,
+  Image
 } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
 import { 
   DEVELOPMENT_PROJECTS, 
   DEVELOPMENT_TYPES,
   canAccessPage, 
-  canWrite 
+  canWrite,
+  HIERARCHY
 } from '../api/data';
 import { useAuth } from '../context/AuthContext';
+
+// Import hierarchy helper functions
 import { 
   getStates,
   getDistricts,
@@ -343,9 +350,13 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
   const constituencies = getAssemblyConstituencies(formData.state, formData.district);
   const blocks = getBlocks(formData.state, formData.district, formData.constituency);
   const panchayats = getPanchayats(formData.state, formData.district, formData.constituency, formData.block);
-  const villages = getVillages(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat, 'Booth 101');
+  
+  // Get polling booths - handle case where panchayat might not exist
+  const booths = formData.panchayat ? getPollingBooths(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat) : [];
+  
+  // Get villages - handle case where booth might not exist
+  const villages = formData.pollingBooth ? getVillages(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat, formData.pollingBooth) : [];
 
-  // DEVELOPMENT_TYPES is imported from data.js
   const developmentTypes = DEVELOPMENT_TYPES;
 
   const handleSubmit = () => {
@@ -373,7 +384,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
       block: formData.block || 'Not Specified',
       panchayat: formData.panchayat || 'Not Specified',
       village: formData.village || 'Not Specified',
-      pollingBooth: 'Booth 101',
+      pollingBooth: formData.pollingBooth || 'Booth 101',
       status: 'Draft',
       progress: 0,
       target: 100,
@@ -387,7 +398,12 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
       expectedCompletion: formData.expectedCompletion || '2025-12-31',
       createdBy: 'Ram Vichar Netam',
       createdDate: new Date().toISOString().split('T')[0],
-      images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop'],
+      images: [
+        'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200',
+        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200'
+      ],
+      videos: [],
       milestones: [
         { name: 'Survey Completed', completed: false, date: formData.startDate },
         { name: 'Foundation Laid', completed: false, date: formData.startDate },
@@ -470,7 +486,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             </label>
             <select
               value={formData.state}
-              onChange={(e) => setFormData({...formData, state: e.target.value, district: '', constituency: '', block: '', panchayat: '', village: ''})}
+              onChange={(e) => setFormData({...formData, state: e.target.value, district: '', constituency: '', block: '', panchayat: '', village: '', pollingBooth: ''})}
               style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.state ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
             >
               <option value="">Select State</option>
@@ -485,7 +501,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             </label>
             <select
               value={formData.district}
-              onChange={(e) => setFormData({...formData, district: e.target.value, constituency: '', block: '', panchayat: '', village: ''})}
+              onChange={(e) => setFormData({...formData, district: e.target.value, constituency: '', block: '', panchayat: '', village: '', pollingBooth: ''})}
               disabled={!formData.state}
               style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.district ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
             >
@@ -499,7 +515,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Constituency</label>
             <select
               value={formData.constituency}
-              onChange={(e) => setFormData({...formData, constituency: e.target.value, block: '', panchayat: '', village: ''})}
+              onChange={(e) => setFormData({...formData, constituency: e.target.value, block: '', panchayat: '', village: '', pollingBooth: ''})}
               disabled={!formData.district}
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
             >
@@ -512,7 +528,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Block</label>
             <select
               value={formData.block}
-              onChange={(e) => setFormData({...formData, block: e.target.value, panchayat: '', village: ''})}
+              onChange={(e) => setFormData({...formData, block: e.target.value, panchayat: '', village: '', pollingBooth: ''})}
               disabled={!formData.constituency}
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
             >
@@ -525,7 +541,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Panchayat</label>
             <select
               value={formData.panchayat}
-              onChange={(e) => setFormData({...formData, panchayat: e.target.value, village: ''})}
+              onChange={(e) => setFormData({...formData, panchayat: e.target.value, village: '', pollingBooth: ''})}
               disabled={!formData.block}
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
             >
@@ -535,11 +551,24 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
           </div>
 
           <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Polling Booth</label>
+            <select
+              value={formData.pollingBooth}
+              onChange={(e) => setFormData({...formData, pollingBooth: e.target.value, village: ''})}
+              disabled={!formData.panchayat || booths.length === 0}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Polling Booth</option>
+              {booths.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+
+          <div>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Village</label>
             <select
               value={formData.village}
               onChange={(e) => setFormData({...formData, village: e.target.value})}
-              disabled={!formData.panchayat}
+              disabled={!formData.pollingBooth || villages.length === 0}
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
             >
               <option value="">Select Village</option>
@@ -732,13 +761,16 @@ const Development = () => {
   const canUpdate = canWrite(user);
   const isUser = user?.role === 'USER';
 
+  // Get all states from hierarchy
   const states = getStates();
-  const districts = getDistricts(selectedState);
-  const assemblies = getAssemblyConstituencies(selectedState, selectedDistrict);
-  const blocks = getBlocks(selectedState, selectedDistrict, selectedAssembly);
-  const panchayats = getPanchayats(selectedState, selectedDistrict, selectedAssembly, selectedBlock);
-  const booths = getPollingBooths(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat);
-  const villages = getVillages(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat, selectedBooth);
+  
+  // Get filtered options based on selections
+  const districts = selectedState ? getDistricts(selectedState) : [];
+  const assemblies = selectedState && selectedDistrict ? getAssemblyConstituencies(selectedState, selectedDistrict) : [];
+  const blocks = selectedState && selectedDistrict && selectedAssembly ? getBlocks(selectedState, selectedDistrict, selectedAssembly) : [];
+  const panchayats = selectedState && selectedDistrict && selectedAssembly && selectedBlock ? getPanchayats(selectedState, selectedDistrict, selectedAssembly, selectedBlock) : [];
+  const booths = selectedState && selectedDistrict && selectedAssembly && selectedBlock && selectedPanchayat ? getPollingBooths(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat) : [];
+  const villages = selectedState && selectedDistrict && selectedAssembly && selectedBlock && selectedPanchayat && selectedBooth ? getVillages(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat, selectedBooth) : [];
 
   const statuses = ['All', 'Active', 'In Progress', 'Upcoming', 'Completed', 'Delayed', 'Draft', 'Approved', 'Closed'];
 
@@ -812,6 +844,62 @@ const Development = () => {
     setProjectToUpdate(null);
   };
 
+  // CSV Export Function
+  const exportCSV = () => {
+    const headers = [
+      'S.No', 'Project ID', 'Project Name', 'Type', 'Description', 'State', 'District', 
+      'Constituency', 'Block', 'Panchayat', 'Polling Booth', 'Village', 
+      'Status', 'Progress (%)', 'Budget (₹)', 'Allocated (₹)', 'Fund Source',
+      'Start Date', 'Expected Completion', 'Created By', 'Created Date'
+    ];
+    
+    const rows = filteredProjects.map((project, i) => [
+      i + 1,
+      project.id,
+      project.name,
+      project.type,
+      project.description || 'N/A',
+      project.state || 'Chhattisgarh',
+      project.district || 'N/A',
+      project.constituency || 'N/A',
+      project.block || 'N/A',
+      project.panchayat || 'N/A',
+      project.pollingBooth || 'N/A',
+      project.village || 'N/A',
+      project.status || 'N/A',
+      project.progress || 0,
+      project.budget || 0,
+      project.allocated || 0,
+      project.fundSource || 'N/A',
+      project.startDate || 'N/A',
+      project.expectedCompletion || 'N/A',
+      project.createdBy || 'N/A',
+      project.createdDate || 'N/A'
+    ]);
+
+    let csvContent = '\uFEFF';
+    csvContent += headers.join(',') + '\n';
+    rows.forEach(row => {
+      const escapedRow = row.map(field => {
+        if (typeof field === 'string' && (field.includes(',') || field.includes('"') || field.includes('\n'))) {
+          return `"${field.replace(/"/g, '""')}"`;
+        }
+        return field;
+      });
+      csvContent += escapedRow.join(',') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `development_projects_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <LayoutWrapper>
       <motion.div
@@ -836,6 +924,13 @@ const Development = () => {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button 
+              className="btn-outline" 
+              onClick={exportCSV}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Download size={18} /> Export CSV
+            </button>
             <button 
               className="btn-outline" 
               onClick={() => setShowReportModal(true)}
@@ -890,60 +985,93 @@ const Development = () => {
 
           <select 
             value={selectedState} 
-            onChange={(e) => { setSelectedState(e.target.value); setSelectedDistrict(''); setSelectedAssembly(''); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedState(e.target.value); 
+              setSelectedDistrict(''); 
+              setSelectedAssembly(''); 
+              setSelectedBlock(''); 
+              setSelectedPanchayat(''); 
+              setSelectedBooth(''); 
+              setSelectedVillage(''); 
+            }}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All States</option>
+            <option value="">All States ({states.length})</option>
             {states.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
 
           <select 
             value={selectedDistrict} 
-            onChange={(e) => { setSelectedDistrict(e.target.value); setSelectedAssembly(''); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedDistrict(e.target.value); 
+              setSelectedAssembly(''); 
+              setSelectedBlock(''); 
+              setSelectedPanchayat(''); 
+              setSelectedBooth(''); 
+              setSelectedVillage(''); 
+            }}
             disabled={!selectedState}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Districts</option>
+            <option value="">All Districts ({districts.length})</option>
             {districts.map(d => <option key={d} value={d}>{d}</option>)}
           </select>
 
           <select 
             value={selectedAssembly} 
-            onChange={(e) => { setSelectedAssembly(e.target.value); setSelectedBlock(''); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedAssembly(e.target.value); 
+              setSelectedBlock(''); 
+              setSelectedPanchayat(''); 
+              setSelectedBooth(''); 
+              setSelectedVillage(''); 
+            }}
             disabled={!selectedDistrict}
             style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Constituencies</option>
+            <option value="">All Constituencies ({assemblies.length})</option>
             {assemblies.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
 
           <select 
             value={selectedBlock} 
-            onChange={(e) => { setSelectedBlock(e.target.value); setSelectedPanchayat(''); setSelectedBooth(''); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedBlock(e.target.value); 
+              setSelectedPanchayat(''); 
+              setSelectedBooth(''); 
+              setSelectedVillage(''); 
+            }}
             disabled={!selectedAssembly}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Blocks</option>
+            <option value="">All Blocks ({blocks.length})</option>
             {blocks.map(b => <option key={b} value={b}>{b}</option>)}
           </select>
 
           <select 
             value={selectedPanchayat} 
-            onChange={(e) => { setSelectedPanchayat(e.target.value); setSelectedBooth(''); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedPanchayat(e.target.value); 
+              setSelectedBooth(''); 
+              setSelectedVillage(''); 
+            }}
             disabled={!selectedBlock}
             style={{ minWidth: '140px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Panchayats</option>
+            <option value="">All Panchayats ({panchayats.length})</option>
             {panchayats.map(p => <option key={p} value={p}>{p}</option>)}
           </select>
 
           <select 
             value={selectedBooth} 
-            onChange={(e) => { setSelectedBooth(e.target.value); setSelectedVillage(''); }}
+            onChange={(e) => { 
+              setSelectedBooth(e.target.value); 
+              setSelectedVillage(''); 
+            }}
             disabled={!selectedPanchayat}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Polling Booths</option>
+            <option value="">All Polling Booths ({booths.length})</option>
             {booths.map(b => <option key={b} value={b}>{b}</option>)}
           </select>
 
@@ -953,7 +1081,7 @@ const Development = () => {
             disabled={!selectedBooth}
             style={{ minWidth: '130px', padding: '0.4rem 0.8rem' }}
           >
-            <option value="">All Villages</option>
+            <option value="">All Villages ({villages.length})</option>
             {villages.map(v => <option key={v} value={v}>{v}</option>)}
           </select>
         </div>
@@ -962,6 +1090,15 @@ const Development = () => {
           <p style={{ fontSize: '0.85rem', color: '#737373' }}>
             Showing {filteredProjects.length} of {projects.length} projects
           </p>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button 
+              className="btn-outline btn-sm" 
+              onClick={exportCSV}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem' }}
+            >
+              <Download size={14} /> Download CSV
+            </button>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
@@ -975,13 +1112,50 @@ const Development = () => {
               style={{ background: 'white', borderRadius: '0.75rem', border: `1px solid ${project.status === 'Delayed' ? '#ef444430' : '#f0f0f0'}`, overflow: 'hidden', transition: 'all 0.3s' }}
             >
               <div style={{ padding: '1.25rem 1.25rem 0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <div>
-                  <h4 style={{ fontWeight: '600', fontSize: '1rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>
-                    {project.name}
-                  </h4>
-                  <p style={{ fontSize: '0.75rem', color: '#737373' }}>
-                    {project.type} · {project.department}
-                  </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  {/* Project Image Avatar - Small Circle */}
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    borderRadius: '50%', 
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    border: '2px solid #f0f0f0',
+                    background: '#fafafa'
+                  }}>
+                    {project.images && project.images.length > 0 ? (
+                      <img 
+                        src={project.images[0]} 
+                        alt={project.name}
+                        style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'cover' 
+                        }}
+                      />
+                    ) : (
+                      <div style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        background: '#e5e5e5',
+                        color: '#737373',
+                        fontSize: '1.25rem'
+                      }}>
+                        <Building2 size={20} />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h4 style={{ fontWeight: '600', fontSize: '1rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>
+                      {project.name}
+                    </h4>
+                    <p style={{ fontSize: '0.75rem', color: '#737373' }}>
+                      {project.type}
+                    </p>
+                  </div>
                 </div>
                 <span className={`status-badge ${getStatusColor(project.status)}`}>
                   {project.status}
@@ -1000,11 +1174,15 @@ const Development = () => {
                 </span>
                 <span>·</span>
                 <span>{project.district}</span>
-                <span>·</span>
-                <span>{project.constituency}</span>
-                <span>·</span>
-                <span>{project.block}</span>
-                {project.village && <><span>·</span><span>{project.village}</span></>}
+                {project.constituency && project.constituency !== 'Not Specified' && (
+                  <><span>·</span><span>{project.constituency}</span></>
+                )}
+                {project.block && project.block !== 'Not Specified' && (
+                  <><span>·</span><span>{project.block}</span></>
+                )}
+                {project.village && project.village !== 'Not Specified' && (
+                  <><span>·</span><span>{project.village}</span></>
+                )}
               </div>
 
               <div style={{ padding: '0 1.25rem 0.75rem' }}>
@@ -1024,7 +1202,7 @@ const Development = () => {
 
               <div style={{ padding: '0.75rem 1.25rem', background: '#fafafa', borderTop: '1px solid #f0f0f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: '#404040' }}>
                 <div><span style={{ color: '#737373' }}>Budget:</span> <strong>₹{(project.budget / 100000).toFixed(1)}L</strong></div>
-                <div><span style={{ color: '#737373' }}>Allocated:</span> <strong>₹{(project.allocated / 100000).toFixed(1)}L</strong></div>
+                <div><span style={{ color: '#737373' }}>Fund:</span> <strong>{project.fundSource || 'N/A'}</strong></div>
                 <div><span style={{ color: '#737373' }}>Start:</span> <span>{project.startDate}</span></div>
                 <div><span style={{ color: '#737373' }}>Expected:</span> <span>{project.expectedCompletion}</span></div>
               </div>
@@ -1056,7 +1234,7 @@ const Development = () => {
             <Building2 size={48} color="#737373" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1a1a1a' }}>No projects found</h3>
             <p style={{ color: '#737373', marginTop: '0.25rem' }}>Try adjusting your filters or create a new project</p>
-            {!isUser && <button className="btn-primary" style={{ marginTop: '1rem' }}><Plus size={16} /> Create New Project</button>}
+            {!isUser && <button className="btn-primary" style={{ marginTop: '1rem' }} onClick={() => setShowCreateModal(true)}><Plus size={16} /> Create New Project</button>}
           </div>
         )}
 
@@ -1080,123 +1258,341 @@ const Development = () => {
         />
 
         {showModal && selectedProject && (
-          <div className="modal-overlay">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="modal-content" style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>{selectedProject.name}</h3>
-                  <p style={{ fontSize: '0.85rem', color: '#737373' }}>{selectedProject.type} · {selectedProject.department}</p>
-                </div>
-                <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
-              </div>
-              
-              <div style={{ marginBottom: '1.5rem' }}>
-                <p style={{ color: '#404040', fontSize: '0.95rem', lineHeight: '1.6' }}>{selectedProject.description}</p>
-                {selectedProject.delayedReason && (
-                  <div style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', background: '#fee2e2', borderRadius: '0.5rem', border: '1px solid #fecaca', fontSize: '0.85rem', color: '#991b1b' }}>
-                    <strong>⚠️ Delayed Reason:</strong> {selectedProject.delayedReason}
-                  </div>
-                )}
-              </div>
+  <div className="modal-overlay">
+    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="modal-content" style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
+        <div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>{selectedProject.name}</h3>
+          <p style={{ fontSize: '0.85rem', color: '#737373' }}>{selectedProject.type}</p>
+        </div>
+        <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
+      </div>
+      
+      {/* Description */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <p
+          style={{
+            color: '#404040',
+            fontSize: '0.95rem',
+            lineHeight: '1.7'
+          }}
+        >
+          {selectedProject.description}
+        </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem', padding: '1rem', background: '#fafafa', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
-                <div style={{ textAlign: 'center' }}>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Overall Progress</h4>
-                  <ProgressChart progress={selectedProject.progress} delayed={selectedProject.status === 'Delayed'} />
-                </div>
-
-                <div>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Milestone Progress</h4>
-                  <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.8rem', color: '#404040' }}>
-                        {getProjectStats(selectedProject).completedMilestones} of {getProjectStats(selectedProject).totalMilestones} completed
-                      </span>
-                      <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#b91c1c' }}>
-                        {getProjectStats(selectedProject).milestoneProgress}%
-                      </span>
-                    </div>
-                    <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${getProjectStats(selectedProject).milestoneProgress}%` }}
-                        transition={{ duration: 0.8 }}
-                        style={{ height: '100%', background: getProjectStats(selectedProject).milestoneProgress > 70 ? '#22c55e' : getProjectStats(selectedProject).milestoneProgress > 40 ? '#f59e0b' : '#b91c1c', borderRadius: '9999px' }} 
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Budget Utilization</h4>
-                  <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.8rem', color: '#404040' }}>
-                        ₹{(selectedProject.allocated / 100000).toFixed(1)}L of ₹{(selectedProject.budget / 100000).toFixed(1)}L
-                      </span>
-                      <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#2563eb' }}>
-                        {getProjectStats(selectedProject).budgetUtilization}%
-                      </span>
-                    </div>
-                    <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${getProjectStats(selectedProject).budgetUtilization}%` }}
-                        transition={{ duration: 0.8 }}
-                        style={{ height: '100%', background: getProjectStats(selectedProject).budgetUtilization > 70 ? '#22c55e' : getProjectStats(selectedProject).budgetUtilization > 40 ? '#f59e0b' : '#ef4444', borderRadius: '9999px' }} 
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
-                <div><strong>Status:</strong> <span className={`status-badge ${getStatusColor(selectedProject.status)}`}>{selectedProject.status}</span></div>
-                <div><strong>Progress:</strong> {selectedProject.progress}%</div>
-                <div><strong>Budget:</strong> ₹{(selectedProject.budget/100000).toFixed(1)}L</div>
-                <div><strong>Allocated:</strong> ₹{(selectedProject.allocated/100000).toFixed(1)}L</div>
-                <div><strong>Start Date:</strong> {selectedProject.startDate}</div>
-                <div><strong>Expected Completion:</strong> {selectedProject.expectedCompletion}</div>
-                <div><strong>State:</strong> {selectedProject.state || 'Chhattisgarh'}</div>
-                <div><strong>District:</strong> {selectedProject.district}</div>
-                <div><strong>Constituency:</strong> {selectedProject.constituency}</div>
-                <div><strong>Block:</strong> {selectedProject.block}</div>
-                <div><strong>Panchayat:</strong> {selectedProject.panchayat}</div>
-                <div><strong>Polling Booth:</strong> {selectedProject.pollingBooth}</div>
-                <div><strong>Village:</strong> {selectedProject.village}</div>
-              </div>
-
-              <h4 style={{ fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.95rem', color: '#1a1a1a' }}>
-                📋 Milestones ({getProjectStats(selectedProject).completedMilestones}/{getProjectStats(selectedProject).totalMilestones})
-              </h4>
-              {selectedProject.milestones.map((m, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0', borderBottom: '1px solid #f5f5f5' }}>
-                  <span style={{ fontSize: '1.1rem' }}>{m.completed ? '✅' : '⏳'}</span>
-                  <span style={{ flex: 1, fontSize: '0.9rem' }}>{m.name}</span>
-                  <span style={{ fontSize: '0.75rem', color: m.completed ? '#166534' : '#737373', background: m.completed ? '#dcfce7' : '#f0f0f0', padding: '0.15rem 0.5rem', borderRadius: '9999px' }}>
-                    {m.completed ? 'Completed' : 'Pending'}
-                  </span>
-                  <span style={{ fontSize: '0.75rem', color: '#737373' }}>{m.date}</span>
-                </div>
-              ))}
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
-                {canUpdate && (
-                  <button 
-                    className="btn-primary" 
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                    onClick={() => { setShowModal(false); setProjectToUpdate(selectedProject); setShowUpdateModal(true); }}
-                  >
-                    <Edit size={18} /> Update Progress
-                  </button>
-                )}
-                <button className="btn-outline" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <BarChart3 size={18} /> View Report
-                </button>
-              </div>
-            </motion.div>
+        {selectedProject.delayedReason && (
+          <div
+            style={{
+              marginTop: '1rem',
+              padding: '0.75rem 1rem',
+              background: '#fee2e2',
+              border: '1px solid #fecaca',
+              borderRadius: '12px',
+              color: '#991b1b'
+            }}
+          >
+            <strong>⚠ Delayed Reason:</strong>{' '}
+            {selectedProject.delayedReason}
           </div>
         )}
+      </div>
+
+      {/* Progress Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem', padding: '1rem', background: '#fafafa', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+        <div style={{ textAlign: 'center' }}>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Overall Progress</h4>
+          <ProgressChart progress={selectedProject.progress} delayed={selectedProject.status === 'Delayed'} />
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Milestone Progress</h4>
+          <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: '#404040' }}>
+                {getProjectStats(selectedProject).completedMilestones} of {getProjectStats(selectedProject).totalMilestones} completed
+              </span>
+              <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#b91c1c' }}>
+                {getProjectStats(selectedProject).milestoneProgress}%
+              </span>
+            </div>
+            <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${getProjectStats(selectedProject).milestoneProgress}%` }}
+                transition={{ duration: 0.8 }}
+                style={{ height: '100%', background: getProjectStats(selectedProject).milestoneProgress > 70 ? '#22c55e' : getProjectStats(selectedProject).milestoneProgress > 40 ? '#f59e0b' : '#b91c1c', borderRadius: '9999px' }} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: '600', color: '#737373', marginBottom: '0.5rem' }}>Budget Utilization</h4>
+          <div style={{ background: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: '#404040' }}>
+                ₹{(selectedProject.allocated / 100000).toFixed(1)}L of ₹{(selectedProject.budget / 100000).toFixed(1)}L
+              </span>
+              <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#2563eb' }}>
+                {getProjectStats(selectedProject).budgetUtilization}%
+              </span>
+            </div>
+            <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${getProjectStats(selectedProject).budgetUtilization}%` }}
+                transition={{ duration: 0.8 }}
+                style={{ height: '100%', background: getProjectStats(selectedProject).budgetUtilization > 70 ? '#22c55e' : getProjectStats(selectedProject).budgetUtilization > 40 ? '#f59e0b' : '#ef4444', borderRadius: '9999px' }} 
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Project Information Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
+        <div><strong>Status:</strong> <span className={`status-badge ${getStatusColor(selectedProject.status)}`}>{selectedProject.status}</span></div>
+        <div><strong>Progress:</strong> {selectedProject.progress}%</div>
+        <div><strong>Budget:</strong> ₹{(selectedProject.budget/100000).toFixed(1)}L</div>
+        <div><strong>Fund Source:</strong> {selectedProject.fundSource || 'N/A'}</div>
+        <div><strong>Start Date:</strong> {selectedProject.startDate}</div>
+        <div><strong>Expected Completion:</strong> {selectedProject.expectedCompletion}</div>
+        <div><strong>State:</strong> {selectedProject.state || 'Chhattisgarh'}</div>
+        <div><strong>District:</strong> {selectedProject.district}</div>
+        {selectedProject.constituency && selectedProject.constituency !== 'Not Specified' && (
+          <div><strong>Constituency:</strong> {selectedProject.constituency}</div>
+        )}
+        {selectedProject.block && selectedProject.block !== 'Not Specified' && (
+          <div><strong>Block:</strong> {selectedProject.block}</div>
+        )}
+        {selectedProject.panchayat && selectedProject.panchayat !== 'Not Specified' && (
+          <div><strong>Panchayat:</strong> {selectedProject.panchayat}</div>
+        )}
+        {selectedProject.pollingBooth && selectedProject.pollingBooth !== 'Not Specified' && (
+          <div><strong>Polling Booth:</strong> {selectedProject.pollingBooth}</div>
+        )}
+        {selectedProject.village && selectedProject.village !== 'Not Specified' && (
+          <div><strong>Village:</strong> {selectedProject.village}</div>
+        )}
+      </div>
+
+      {/* Milestones */}
+      <h4 style={{ fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.95rem', color: '#1a1a1a' }}>
+        📋 Milestones ({getProjectStats(selectedProject).completedMilestones}/{getProjectStats(selectedProject).totalMilestones})
+      </h4>
+      {selectedProject.milestones.map((m, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0', borderBottom: '1px solid #f5f5f5' }}>
+          <span style={{ fontSize: '1.1rem' }}>{m.completed ? '✅' : '⏳'}</span>
+          <span style={{ flex: 1, fontSize: '0.9rem' }}>{m.name}</span>
+          <span style={{ fontSize: '0.75rem', color: m.completed ? '#166534' : '#737373', background: m.completed ? '#dcfce7' : '#f0f0f0', padding: '0.15rem 0.5rem', borderRadius: '9999px' }}>
+            {m.completed ? 'Completed' : 'Pending'}
+          </span>
+          <span style={{ fontSize: '0.75rem', color: '#737373' }}>{m.date}</span>
+        </div>
+      ))}
+
+      {/* Action Buttons */}
+      <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+        {canUpdate && (
+          <button 
+            className="btn-primary" 
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            onClick={() => { setShowModal(false); setProjectToUpdate(selectedProject); setShowUpdateModal(true); }}
+          >
+            <Edit size={18} /> Update Progress
+          </button>
+        )}
+        <button className="btn-outline" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <BarChart3 size={18} /> View Report
+        </button>
+      </div>
+
+      {/* ============ IMAGES & VIDEOS SECTION (At the end) ============ */}
+      <div style={{ borderTop: '2px solid #f0f0f0', paddingTop: '1.5rem', marginTop: '0.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <ImageIcon size={20} color="#b91c1c" /> Media Gallery
+        </h3>
+
+        {/* Images Grid */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h4
+            style={{
+              marginBottom: '0.75rem',
+              fontWeight: '600',
+              fontSize: '0.95rem',
+              color: '#404040',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <ImageIcon size={16} /> Images ({selectedProject.images?.length || 0})
+          </h4>
+
+          {selectedProject.images && selectedProject.images.length > 0 ? (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                gap: '1rem'
+              }}
+            >
+              {(selectedProject.images || []).map(
+                (image, index) => (
+                  <motion.img
+                    key={index}
+                    src={image}
+                    alt={`${selectedProject.name} - Image ${index + 1}`}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    style={{
+                      width: '100%',
+                      height: '160px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      border: '1px solid #e5e5e5',
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s, box-shadow 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.03)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                    onClick={() => {
+                      window.open(image, '_blank');
+                    }}
+                  />
+                )
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: '2rem',
+                background: '#fafafa',
+                borderRadius: '12px',
+                border: '1px dashed #e5e5e5',
+                textAlign: 'center',
+                color: '#737373'
+              }}
+            >
+              <ImageIcon size={32} color="#737373" style={{ marginBottom: '0.5rem' }} />
+              <p>No images uploaded yet</p>
+              {canUpdate && (
+                <button
+                  className="btn-outline btn-sm"
+                  style={{ marginTop: '0.5rem' }}
+                  onClick={() => {
+                    // You can add image upload logic here
+                    alert('Image upload functionality coming soon!');
+                  }}
+                >
+                  <Upload size={14} /> Upload Images
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Videos Section */}
+        <div>
+          <h4
+            style={{
+              marginBottom: '0.75rem',
+              fontWeight: '600',
+              fontSize: '0.95rem',
+              color: '#404040',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <Video size={16} /> Videos ({selectedProject.videos?.length || 0})
+          </h4>
+
+          {selectedProject.videos && selectedProject.videos.length > 0 ? (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gap: '1rem'
+              }}
+            >
+              {(selectedProject.videos || []).map((video, index) => (
+                <div
+                  key={index}
+                  style={{
+                    background: '#000',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    aspectRatio: '16/9'
+                  }}
+                >
+                  <video
+                    src={video}
+                    controls
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                    poster={selectedProject.images?.[0] || ''}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: '2rem',
+                background: '#fafafa',
+                borderRadius: '12px',
+                border: '1px dashed #e5e5e5',
+                textAlign: 'center',
+                color: '#737373'
+              }}
+            >
+              <Video size={32} color="#737373" style={{ marginBottom: '0.5rem' }} />
+              <p>No videos uploaded yet</p>
+              {canUpdate && (
+                <button
+                  className="btn-outline btn-sm"
+                  style={{ marginTop: '0.5rem' }}
+                  onClick={() => {
+                    alert('Video upload functionality coming soon!');
+                  }}
+                >
+                  <Upload size={14} /> Upload Videos
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Upload All Button (for users with update permissions) */}
+        {canUpdate && (
+          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+            <button
+              className="btn-primary"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              onClick={() => {
+                alert('Media upload modal coming soon!');
+              }}
+            >
+              <Upload size={16} /> Add Media (Images & Videos)
+            </button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  </div>
+)}
       </motion.div>
     </LayoutWrapper>
   );

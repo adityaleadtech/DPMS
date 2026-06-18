@@ -17,6 +17,7 @@ import Notifications from './pages/Notifications';
 import Registration from './pages/Registration';
 import Volunteers from './pages/Volunteers';
 import Funding from './pages/Funding';
+import Mlalad from './pages/Mlalad'; // Import the Mlalad component
 
 function App() {
   return (
@@ -128,6 +129,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Funding />
+              </ProtectedRoute>
+            } 
+          />
+          {/* MLA LED Fund Route - Now inside Routes */}
+          <Route 
+            path="/mla-led-fund" 
+            element={
+              <ProtectedRoute>
+                <Mlalad />
               </ProtectedRoute>
             } 
           />

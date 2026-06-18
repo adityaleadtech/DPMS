@@ -15,7 +15,7 @@ const Header = () => {
     }}>
       <div>
         <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>
-          Welcome, <span style={{ color: '#b91c1c' }}>{user?.name}</span>
+          नमस्ते, <span style={{ color: '#b91c1c' }}>{user?.name} </span>  जी
         </h1>
         <p style={{ fontSize: '0.85rem', color: '#737373' }}>
           {user?.role} · {user?.region} {user?.department && `· ${user.department}`}

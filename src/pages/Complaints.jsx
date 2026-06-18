@@ -20,7 +20,15 @@ import {
   X,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  User,
+  Calendar,
+  MessageSquare,
+  Hash,
+  Tag,
+  Home,
+  Phone,
+  Mail
 } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
 import { COMPLAINTS } from '../api/data';
@@ -41,13 +49,11 @@ const ComplaintReportModal = ({ isOpen, onClose, complaints }) => {
   const resolutionRate = total > 0 ? Math.round(((resolved + closed) / total) * 100) : 0;
   const avgProgress = total > 0 ? Math.round(complaints.reduce((sum, c) => sum + c.progress, 0) / total) : 0;
   
-  // Priority distribution
   const critical = complaints.filter(c => c.priority === 'Critical').length;
   const high = complaints.filter(c => c.priority === 'High').length;
   const medium = complaints.filter(c => c.priority === 'Medium').length;
   const low = complaints.filter(c => c.priority === 'Low').length;
   
-  // Category distribution
   const categoryData = {};
   complaints.forEach(c => {
     if (!categoryData[c.category]) categoryData[c.category] = 0;
@@ -55,7 +61,6 @@ const ComplaintReportModal = ({ isOpen, onClose, complaints }) => {
   });
   const topCategories = Object.entries(categoryData).sort((a, b) => b[1] - a[1]).slice(0, 5);
   
-  // District distribution
   const districtData = {};
   complaints.forEach(c => {
     if (!districtData[c.district]) districtData[c.district] = 0;
@@ -90,7 +95,6 @@ const ComplaintReportModal = ({ isOpen, onClose, complaints }) => {
           </div>
         </div>
 
-        {/* Summary Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <div style={{ background: '#fafafa', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
             <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#b91c1c' }}>{total}</div>
@@ -118,7 +122,6 @@ const ComplaintReportModal = ({ isOpen, onClose, complaints }) => {
           </div>
         </div>
 
-        {/* Priority Distribution */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0' }}>
             <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.75rem', color: '#1a1a1a' }}>
@@ -170,7 +173,6 @@ const ComplaintReportModal = ({ isOpen, onClose, complaints }) => {
           </div>
         </div>
 
-        {/* Top Districts */}
         <div>
           <h4 style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: '#1a1a1a' }}>
             <MapPin size={16} style={{ display: 'inline', marginRight: '0.3rem' }} />
@@ -335,7 +337,8 @@ const CreateComplaintModal = ({ isOpen, onClose, onCreate }) => {
       progress: 0,
       date: new Date().toISOString().split('T')[0],
       submittedBy: 'Citizen',
-      assignedTo: 'Pending'
+      assignedTo: 'Pending',
+      voterId: `CG/RAI/${String(100000 + Math.floor(Math.random() * 10000)).padStart(6, '0')}`
     };
 
     COMPLAINTS.push(newComplaint);
@@ -474,10 +477,148 @@ const CreateComplaintModal = ({ isOpen, onClose, onCreate }) => {
   );
 };
 
+// View Complaint Details Modal
+const ViewComplaintModal = ({ isOpen, onClose, complaint }) => {
+  if (!isOpen || !complaint) return null;
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'Open': 'status-pending',
+      'In Progress': 'status-scheduled',
+      'Resolved': 'status-completed',
+      'Closed': 'status-inactive'
+    };
+    return colors[status] || 'status-pending';
+  };
+
+  const getPriorityColor = (priority) => {
+    const colors = {
+      'Critical': '#dc2626',
+      'High': '#f59e0b',
+      'Medium': '#3b82f6',
+      'Low': '#22c55e'
+    };
+    return colors[priority] || '#737373';
+  };
+
+  return (
+    <div className="modal-overlay" style={{ zIndex: 2000 }}>
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="modal-content"
+        style={{ maxWidth: '550px', padding: '2rem' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f0f0f0', paddingBottom: '1rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <AlertTriangle size={22} color="#b91c1c" />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>
+                Complaint Details
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: '#737373' }}>
+              <Hash size={12} style={{ display: 'inline', marginRight: '0.2rem' }} />
+              {complaint.id} · Submitted on {complaint.date}
+            </p>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#737373' }}>×</button>
+        </div>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          {/* Title & Status */}
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#1a1a1a' }}>{complaint.title}</h4>
+              <span className={`status-badge ${getStatusColor(complaint.status)}`} style={{ fontSize: '0.7rem', padding: '0.15rem 0.5rem' }}>
+                {complaint.status}
+              </span>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: '#404040', lineHeight: '1.6' }}>
+              {complaint.description || complaint.details || 'No detailed description provided.'}
+            </p>
+          </div>
+
+          {/* Details Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1rem' }}>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Category</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.category}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Priority</div>
+              <div style={{ 
+                fontSize: '0.8rem', 
+                fontWeight: '600', 
+                color: getPriorityColor(complaint.priority)
+              }}>
+                {complaint.priority}
+              </div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>District</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.district}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Constituency</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.constituency}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Location</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.location}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Submitted By</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.submittedBy || 'Citizen'}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Assigned To</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.assignedTo || 'Pending'}</div>
+            </div>
+            <div style={{ background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+              <div style={{ fontSize: '0.6rem', color: '#737373' }}>Voter ID</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: '500', color: '#1a1a1a' }}>{complaint.voterId || 'N/A'}</div>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div style={{ marginTop: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#737373', marginBottom: '0.15rem' }}>
+              <span>Progress</span>
+              <span style={{ fontWeight: '600' }}>{complaint.progress}%</span>
+            </div>
+            <div style={{ height: '6px', background: '#f0f0f0', borderRadius: '9999px', overflow: 'hidden' }}>
+              <div style={{ 
+                width: `${complaint.progress}%`, 
+                height: '100%', 
+                background: complaint.progress > 70 ? '#22c55e' : complaint.progress > 40 ? '#f59e0b' : '#ef4444',
+                borderRadius: '9999px' 
+              }} />
+            </div>
+          </div>
+
+          {/* Additional Info */}
+          {complaint.notes && (
+            <div style={{ marginTop: '0.75rem', background: '#fef3c7', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid #fde68a' }}>
+              <div style={{ fontSize: '0.6rem', color: '#92400e' }}>Latest Update</div>
+              <div style={{ fontSize: '0.8rem', color: '#78350f', marginTop: '0.1rem' }}>{complaint.notes}</div>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid #f0f0f0', paddingTop: '1rem' }}>
+          <button className="btn-outline" onClick={onClose} style={{ flex: 1 }}>Close</button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 const Complaints = () => {
   const { user } = useAuth();
-  const canCreate = canWrite(user);
-  const canUpdate = canWrite(user);
+  const isUser = user?.role === 'USER';
+  const canUpdate = !isUser && canWrite(user);
+  const canCreate = true;
   
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -486,19 +627,34 @@ const Complaints = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [complaints, setComplaints] = useState(COMPLAINTS);
+
+  const getFilteredComplaints = () => {
+    let data = complaints;
+    
+    if (isUser) {
+      data = complaints.filter(c => 
+        c.submittedBy === 'Citizen' || 
+        c.submittedBy === user?.name ||
+        c.voterId === `CG/RAI/100000`
+      );
+    }
+    
+    return data.filter(c => 
+      c.title.toLowerCase().includes(search.toLowerCase()) &&
+      (filterStatus === 'All' || c.status === filterStatus) &&
+      (filterDistrict === '' || c.district === filterDistrict) &&
+      (filterConstituency === '' || c.constituency === filterConstituency)
+    );
+  };
+
+  const filtered = getFilteredComplaints();
 
   const statuses = ['All', 'Open', 'In Progress', 'Resolved', 'Closed'];
   const districts = [...new Set(complaints.map(c => c.district))];
   const constituencies = filterDistrict ? [...new Set(complaints.filter(c => c.district === filterDistrict).map(c => c.constituency))] : [];
-
-  const filtered = complaints.filter(c => 
-    c.title.toLowerCase().includes(search.toLowerCase()) &&
-    (filterStatus === 'All' || c.status === filterStatus) &&
-    (filterDistrict === '' || c.district === filterDistrict) &&
-    (filterConstituency === '' || c.constituency === filterConstituency)
-  );
 
   const clearFilters = () => {
     setSearch('');
@@ -515,7 +671,6 @@ const Complaints = () => {
       const newComplaints = [...complaints];
       newComplaints[index] = updatedComplaint;
       setComplaints(newComplaints);
-      // Update the original array
       const origIndex = COMPLAINTS.findIndex(c => c.id === updatedComplaint.id);
       if (origIndex !== -1) {
         COMPLAINTS[origIndex] = updatedComplaint;
@@ -549,8 +704,12 @@ const Complaints = () => {
           flexShrink: 0
         }}>
           <div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>Complaints</h2>
-            <p style={{ fontSize: '0.85rem', color: '#737373' }}>Track citizen complaints · {complaints.length} total</p>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1a1a1a' }}>
+              {isUser ? 'My Complaints' : 'Complaints'}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: '#737373' }}>
+              {isUser ? `Showing your complaints (${filtered.length})` : `Track citizen complaints · ${complaints.length} total`}
+            </p>
           </div>
           <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
             <button 
@@ -688,7 +847,7 @@ const Complaints = () => {
             width: '100%', 
             borderCollapse: 'collapse',
             fontSize: '0.75rem',
-            minWidth: '900px'
+            minWidth: isUser ? '850px' : '950px'
           }}>
             <thead style={{ 
               position: 'sticky', 
@@ -750,14 +909,25 @@ const Complaints = () => {
                   </td>
                   <td style={{ padding: '0.3rem 0.4rem', fontSize: '0.65rem' }}>{complaint.date}</td>
                   <td style={{ padding: '0.3rem 0.4rem' }}>
-                    <button 
-                      onClick={() => { setSelectedComplaint(complaint); setShowUpdateModal(true); }}
-                      className="btn-outline btn-sm" 
-                      style={{ padding: '0.15rem 0.4rem', fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
-                      disabled={!canUpdate}
-                    >
-                      <Edit size={12} /> Update
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.2rem' }}>
+                      <button 
+                        onClick={() => { setSelectedComplaint(complaint); setShowViewModal(true); }}
+                        className="btn-outline btn-sm" 
+                        style={{ padding: '0.15rem 0.4rem', fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                      >
+                        <Eye size={12} /> View
+                      </button>
+                      {!isUser && (
+                        <button 
+                          onClick={() => { setSelectedComplaint(complaint); setShowUpdateModal(true); }}
+                          className="btn-outline btn-sm" 
+                          style={{ padding: '0.15rem 0.4rem', fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                          disabled={!canUpdate}
+                        >
+                          <Edit size={12} /> Update
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </motion.tr>
               ))}
@@ -776,7 +946,7 @@ const Complaints = () => {
           flexShrink: 0
         }}>
           <p style={{ fontSize: '0.7rem', color: '#737373' }}>
-            Showing {filtered.length} of {complaints.length} complaints
+            Showing {filtered.length} of {isUser ? 'your' : complaints.length} complaints
           </p>
         </div>
 
@@ -798,6 +968,12 @@ const Complaints = () => {
           onClose={() => { setShowUpdateModal(false); setSelectedComplaint(null); }}
           complaint={selectedComplaint}
           onUpdate={handleUpdateComplaint}
+        />
+
+        <ViewComplaintModal
+          isOpen={showViewModal}
+          onClose={() => { setShowViewModal(false); setSelectedComplaint(null); }}
+          complaint={selectedComplaint}
         />
       </motion.div>
     </LayoutWrapper>

@@ -11,6 +11,7 @@ const Sidebar = () => {
   const allMenuItems = [
     { path: '/dashboard', icon: '📊', label: 'Dashboard' },
     { path: '/development', icon: '🏗️', label: 'Development' },
+    { path: '/mla-led-fund', icon: '💵', label: 'MLA LAD Fund' },
     { path: '/voters', icon: '👥', label: 'Voter List' },
     { path: '/complaints', icon: '⚠️', label: 'Complaints' },
     { path: '/meetings', icon: '📅', label: 'Meetings' },
@@ -21,6 +22,7 @@ const Sidebar = () => {
     { path: '/registration', icon: '📝', label: 'Registration' },
     { path: '/volunteers', icon: '🤝', label: 'Volunteers' },
     { path: '/funding', icon: '💰', label: 'Funding' },
+     // Added MLA LED Fund
   ];
 
   // Filter menu items based on user role

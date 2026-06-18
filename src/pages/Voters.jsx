@@ -22,7 +22,7 @@ import {
   X
 } from 'lucide-react';
 import LayoutWrapper from '../components/layout/LayoutWrapper';
-import { VOTERS } from '../api/data';
+import { VOTERS, CASTE_REFERENCE } from '../api/data';
 import { useAuth } from '../context/AuthContext';
 import { 
   getStates,
@@ -40,8 +40,9 @@ const VoterReportModal = ({ isOpen, onClose, voters }) => {
   if (!isOpen) return null;
 
   const totalVoters = voters.length;
-  const activeVoters = voters.filter(v => v.status === 'Active').length;
-  const inactiveVoters = voters.filter(v => v.status === 'Inactive').length;
+  const favourVoters = voters.filter(v => v.status === 'Favour').length;
+  const opposeVoters = voters.filter(v => v.status === 'Oppose').length;
+  const neutralVoters = voters.filter(v => v.status === 'Neutral').length;
   
   const maleCount = voters.filter(v => v.gender === 'Male').length;
   const femaleCount = voters.filter(v => v.gender === 'Female').length;
@@ -111,18 +112,16 @@ const VoterReportModal = ({ isOpen, onClose, voters }) => {
             <div style={{ fontSize: '0.75rem', color: '#737373' }}>Total Voters</div>
           </div>
           <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#22c55e' }}>{activeVoters}</div>
-            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Active Voters</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#22c55e' }}>{favourVoters}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>In Favour</div>
           </div>
           <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>{inactiveVoters}</div>
-            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Inactive Voters</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>{opposeVoters}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Oppose</div>
           </div>
           <div style={{ background: '#fafafa', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #f0f0f0', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#8b5cf6' }}>
-              {totalVoters > 0 ? Math.round((activeVoters / totalVoters) * 100) : 0}%
-            </div>
-            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Active Rate</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#8b5cf6' }}>{neutralVoters}</div>
+            <div style={{ fontSize: '0.75rem', color: '#737373' }}>Neutral</div>
           </div>
         </div>
 
@@ -258,7 +257,7 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
   const [formData, setFormData] = useState({
     name: '',
     voterId: '',
-    state: '',
+    state: 'Chhattisgarh', // Default to Chhattisgarh
     district: '',
     constituency: '',
     block: '',
@@ -268,7 +267,8 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
     houseNumber: '',
     age: '',
     gender: 'Male',
-    caste: 'General',
+    casteCategory: 'General',
+    caste: '',
     phoneNumber: '',
     email: '',
     relationName: '',
@@ -284,9 +284,15 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
   const booths = getPollingBooths(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat);
   const villages = getVillages(formData.state, formData.district, formData.constituency, formData.block, formData.panchayat, formData.pollingBooth);
 
-  const castes = ['General', 'OBC', 'SC', 'ST'];
+  const casteCategories = ['General', 'OBC', 'SC', 'ST'];
   const genders = ['Male', 'Female', 'Other'];
   const relationTypes = ['Father', 'Mother', 'Husband', 'Wife'];
+  const statuses = ['Favour', 'Oppose', 'Neutral'];
+
+  // Get castes for selected category
+  const getCastesForCategory = (category) => {
+    return CASTE_REFERENCE.castes[category] || [];
+  };
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -297,6 +303,7 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
     if (!formData.constituency) newErrors.constituency = 'Constituency is required';
     if (!formData.age) newErrors.age = 'Age is required';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone number is required';
+    if (!formData.caste) newErrors.caste = 'Caste is required';
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -317,12 +324,13 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
       houseNumber: formData.houseNumber || 'N/A',
       age: parseInt(formData.age),
       gender: formData.gender,
+      casteCategory: formData.casteCategory,
       caste: formData.caste,
       phoneNumber: formData.phoneNumber,
       email: formData.email || 'Not Provided',
       relationName: formData.relationName || 'N/A',
       relationType: formData.relationType,
-      status: 'Active',
+      status: 'Neutral',
       dateOfBirth: `19${80 - parseInt(formData.age) + 20}-01-01`,
       registeredDate: new Date().toISOString().split('T')[0]
     };
@@ -518,14 +526,34 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>Caste</label>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Caste Category <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <select
+              value={formData.casteCategory}
+              onChange={(e) => setFormData({...formData, casteCategory: e.target.value, caste: ''})}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.casteCategory ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
+            >
+              <option value="">Select Category</option>
+              {casteCategories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            {errors.casteCategory && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.casteCategory}</span>}
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+              Caste <span style={{ color: '#ef4444' }}>*</span>
+            </label>
             <select
               value={formData.caste}
               onChange={(e) => setFormData({...formData, caste: e.target.value})}
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e5e5', borderRadius: '0.5rem', background: 'white' }}
+              disabled={!formData.casteCategory}
+              style={{ width: '100%', padding: '0.5rem', border: `1px solid ${errors.caste ? '#ef4444' : '#e5e5e5'}`, borderRadius: '0.5rem', background: 'white' }}
             >
-              {castes.map(c => <option key={c} value={c}>{c}</option>)}
+              <option value="">Select Caste</option>
+              {getCastesForCategory(formData.casteCategory).map(c => <option key={c} value={c}>{c}</option>)}
             </select>
+            {errors.caste && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>{errors.caste}</span>}
           </div>
 
           <div>
@@ -590,13 +618,14 @@ const AddVoterModal = ({ isOpen, onClose, onVoterAdded }) => {
 const Voters = () => {
   const { user } = useAuth();
   const [search, setSearch] = useState('');
-  const [selectedState, setSelectedState] = useState('');
+  const [selectedState, setSelectedState] = useState('Chhattisgarh'); // Default to Chhattisgarh
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedAssembly, setSelectedAssembly] = useState('');
   const [selectedBlock, setSelectedBlock] = useState('');
   const [selectedPanchayat, setSelectedPanchayat] = useState('');
   const [selectedBooth, setSelectedBooth] = useState('');
   const [selectedVillage, setSelectedVillage] = useState('');
+  const [filterCasteCategory, setFilterCasteCategory] = useState('');
   const [filterCaste, setFilterCaste] = useState('');
   const [filterGender, setFilterGender] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
@@ -664,9 +693,21 @@ const Voters = () => {
   const booths = getFilteredBooths(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat);
   const villages = getFilteredVillages(selectedState, selectedDistrict, selectedAssembly, selectedBlock, selectedPanchayat, selectedBooth);
 
-  const castes = [...new Set(voters.map(v => v.caste))].sort();
+  // Get caste categories and castes for filter
+  const casteCategories = ['General', 'OBC', 'SC', 'ST'];
+  const getCastesForCategory = (category) => {
+    if (!category) return [];
+    const allCastes = new Set();
+    voters.forEach(v => {
+      if (v.casteCategory === category && v.caste) {
+        allCastes.add(v.caste);
+      }
+    });
+    return Array.from(allCastes).sort();
+  };
+
   const genders = ['Male', 'Female', 'Other'];
-  const statuses = ['Active', 'Inactive'];
+  const statuses = ['Favour', 'Oppose', 'Neutral'];
 
   const filteredVoters = voters.filter(v => {
     let match = true;
@@ -684,6 +725,7 @@ const Voters = () => {
     if (selectedPanchayat && v.panchayat !== selectedPanchayat) match = false;
     if (selectedBooth && v.pollingBooth !== selectedBooth) match = false;
     if (selectedVillage && v.village !== selectedVillage) match = false;
+    if (filterCasteCategory && v.casteCategory !== filterCasteCategory) match = false;
     if (filterCaste && v.caste !== filterCaste) match = false;
     if (filterGender && v.gender !== filterGender) match = false;
     if (filterStatus && v.status !== filterStatus) match = false;
@@ -692,25 +734,26 @@ const Voters = () => {
 
   const clearFilters = () => {
     setSearch('');
-    setSelectedState('');
+    setSelectedState('Chhattisgarh'); // Reset to Chhattisgarh
     setSelectedDistrict('');
     setSelectedAssembly('');
     setSelectedBlock('');
     setSelectedPanchayat('');
     setSelectedBooth('');
     setSelectedVillage('');
+    setFilterCasteCategory('');
     setFilterCaste('');
     setFilterGender('');
     setFilterStatus('');
   };
 
-  const hasActiveFilters = search || selectedState || selectedDistrict || selectedAssembly || selectedBlock || selectedPanchayat || selectedBooth || selectedVillage || filterCaste || filterGender || filterStatus;
+  const hasActiveFilters = search || selectedState !== 'Chhattisgarh' || selectedDistrict || selectedAssembly || selectedBlock || selectedPanchayat || selectedBooth || selectedVillage || filterCasteCategory || filterCaste || filterGender || filterStatus;
 
   // Export CSV
   const exportCSV = () => {
-    const headers = ['S.No', 'State', 'District', 'Name', 'Voter ID', 'Constituency', 'Block', 'Panchayat', 'Polling Booth', 'Village', 'House No', 'Age', 'Gender', 'Caste', 'Relation Name', 'Relation Type', 'Phone', 'Email', 'DOB', 'Status', 'Registration Date'];
+    const headers = ['S.No', 'State', 'District', 'Name', 'Voter ID', 'Constituency', 'Block', 'Panchayat', 'Polling Booth', 'Village', 'House No', 'Age', 'Gender', 'Caste Category', 'Caste', 'Relation Name', 'Relation Type', 'Phone', 'Email', 'DOB', 'Status', 'Registration Date'];
     const rows = filteredVoters.map((v, i) => [
-      i + 1, v.state, v.district, v.name, v.voterId, v.constituency, v.block, v.panchayat, v.pollingBooth, v.village, v.houseNumber, v.age, v.gender, v.caste, v.relationName, v.relationType, v.phoneNumber, v.email, v.dateOfBirth, v.status, v.registeredDate
+      i + 1, v.state, v.district, v.name, v.voterId, v.constituency, v.block, v.panchayat, v.pollingBooth, v.village, v.houseNumber, v.age, v.gender, v.casteCategory, v.caste, v.relationName, v.relationType, v.phoneNumber, v.email, v.dateOfBirth, v.status, v.registeredDate
     ]);
     let csvContent = headers.join(',') + '\n';
     rows.forEach(row => {
@@ -938,12 +981,25 @@ const Voters = () => {
             </span>
 
             <select 
+              value={filterCasteCategory} 
+              onChange={(e) => {
+                setFilterCasteCategory(e.target.value);
+                setFilterCaste(''); // Reset caste when category changes
+              }}
+              style={{ minWidth: '100px', padding: '0.2rem 0.4rem', fontSize: '0.7rem', border: '1px solid #e5e5e5', borderRadius: '0.4rem', background: 'white' }}
+            >
+              <option value="">All Categories</option>
+              {casteCategories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+
+            <select 
               value={filterCaste} 
               onChange={(e) => setFilterCaste(e.target.value)}
-              style={{ minWidth: '90px', padding: '0.2rem 0.4rem', fontSize: '0.7rem', border: '1px solid #e5e5e5', borderRadius: '0.4rem', background: 'white' }}
+              disabled={!filterCasteCategory}
+              style={{ minWidth: '100px', padding: '0.2rem 0.4rem', fontSize: '0.7rem', border: '1px solid #e5e5e5', borderRadius: '0.4rem', background: 'white' }}
             >
               <option value="">All Castes</option>
-              {castes.map(c => <option key={c} value={c}>{c}</option>)}
+              {getCastesForCategory(filterCasteCategory).map(c => <option key={c} value={c}>{c}</option>)}
             </select>
 
             <select 
@@ -983,16 +1039,17 @@ const Voters = () => {
           }}>
             <span style={{ fontWeight: '600', color: '#404040' }}>Active Filters:</span>
             {search && <span className="status-badge status-active" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>🔍 {search}</span>}
-            {selectedState && <span className="status-badge status-active" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{selectedState}</span>}
+            {selectedState && selectedState !== 'Chhattisgarh' && <span className="status-badge status-active" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{selectedState}</span>}
             {selectedDistrict && <span className="status-badge status-scheduled" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{selectedDistrict}</span>}
             {selectedAssembly && <span className="status-badge status-completed" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{selectedAssembly}</span>}
-            {filterCaste && <span className="status-badge status-active" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{filterCaste}</span>}
+            {filterCasteCategory && <span className="status-badge" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem', background: '#dbeafe', color: '#1e40af' }}>📋 {filterCasteCategory}</span>}
+            {filterCaste && <span className="status-badge" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem', background: '#fef3c7', color: '#92400e' }}>👥 {filterCaste}</span>}
             {filterGender && <span className="status-badge status-scheduled" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{filterGender}</span>}
             {filterStatus && <span className="status-badge status-completed" style={{ fontSize: '0.55rem', padding: '0.1rem 0.4rem' }}>{filterStatus}</span>}
           </div>
         )}
 
-        {/* Actions - All buttons grouped together */}
+        {/* Actions */}
         <div style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
@@ -1043,7 +1100,7 @@ const Voters = () => {
             width: '100%', 
             borderCollapse: 'collapse',
             fontSize: '0.75rem',
-            minWidth: '1900px'
+            minWidth: '2000px'
           }}>
             <thead style={{ 
               position: 'sticky', 
@@ -1065,7 +1122,8 @@ const Voters = () => {
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '60px' }}>House</th>
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '40px' }}>Age</th>
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '60px' }}>Gender</th>
-                <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '65px' }}>Caste</th>
+                <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '80px' }}>Caste Cat.</th>
+                <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '80px' }}>Caste</th>
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '85px' }}>Relation</th>
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '100px' }}>Phone</th>
                 <th style={{ padding: '0.35rem 0.4rem', textAlign: 'left', fontWeight: '600', color: '#737373', borderBottom: '2px solid #f0f0f0', minWidth: '130px' }}>Email</th>
@@ -1106,6 +1164,22 @@ const Voters = () => {
                   <td style={{ padding: '0.3rem 0.4rem' }}>{voter.houseNumber}</td>
                   <td style={{ padding: '0.3rem 0.4rem' }}>{voter.age}</td>
                   <td style={{ padding: '0.3rem 0.4rem' }}>{voter.gender}</td>
+                  <td style={{ padding: '0.3rem 0.4rem' }}>
+                    <span style={{ 
+                      padding: '0.1rem 0.3rem', 
+                      borderRadius: '9999px', 
+                      fontSize: '0.5rem', 
+                      fontWeight: '600',
+                      background: voter.casteCategory === 'General' ? '#dbeafe' : 
+                                 voter.casteCategory === 'OBC' ? '#fef3c7' :
+                                 voter.casteCategory === 'SC' ? '#fce4ec' : '#f3e5f5',
+                      color: voter.casteCategory === 'General' ? '#1e40af' : 
+                             voter.casteCategory === 'OBC' ? '#92400e' :
+                             voter.casteCategory === 'SC' ? '#c62828' : '#6a1b9a'
+                    }}>
+                      {voter.casteCategory}
+                    </span>
+                  </td>
                   <td style={{ padding: '0.3rem 0.4rem' }}>{voter.caste}</td>
                   <td style={{ padding: '0.3rem 0.4rem', fontSize: '0.65rem' }}>
                     {voter.relationName}<br/>
@@ -1115,7 +1189,11 @@ const Voters = () => {
                   <td style={{ padding: '0.3rem 0.4rem', fontSize: '0.6rem' }}>{voter.email}</td>
                   <td style={{ padding: '0.3rem 0.4rem', fontSize: '0.6rem' }}>{voter.dateOfBirth}</td>
                   <td style={{ padding: '0.3rem 0.4rem' }}>
-                    <span className={`status-badge ${voter.status === 'Active' ? 'status-active' : 'status-inactive'}`} style={{ fontSize: '0.55rem', padding: '0.1rem 0.3rem' }}>
+                    <span className={`status-badge ${
+                      voter.status === 'Favour' ? 'status-active' : 
+                      voter.status === 'Oppose' ? 'status-inactive' : 
+                      'status-pending'
+                    }`} style={{ fontSize: '0.55rem', padding: '0.1rem 0.3rem' }}>
                       {voter.status}
                     </span>
                   </td>

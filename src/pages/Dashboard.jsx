@@ -311,7 +311,7 @@ const Dashboard = () => {
   const filteredProjects = getFilteredData(DEVELOPMENT_PROJECTS);
   const filteredVoters = getFilteredData(VOTERS);
 
-  const userAvatar = user?.Avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq0sw-nyjVU57Svz9x-mVgrtO1GMOowr4WAUvUrNq0jawYAOEqIGauc9xxDwYE_XtKiylQarUV_JUtAuNuaI8Upl615e1BHBZVitMHRE8&s=10';
+  const userAvatar = user?.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq0sw-nyjVU57Svz9x-mVgrtO1GMOowr4WAUvUrNq0jawYAOEqIGauc9xxDwYE_XtKiylQarUV_JUtAuNuaI8Upl615e1BHBZVitMHRE8&s=10';
 
   // Chart Data
   const projectStatusData = [
@@ -440,7 +440,7 @@ const Dashboard = () => {
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <h1 style={{ fontSize: '1.75rem', fontWeight: '600', letterSpacing: '-0.5px' }}>
-                Namaste, {user?.name?.split(' ')[0]} Ji
+                नमस्ते, {user?.name || 'User'} जी
               </h1>
               <span style={{ 
                 fontSize: '0.8rem', 
@@ -456,25 +456,7 @@ const Dashboard = () => {
             <p style={{ opacity: 0.85, marginTop: '0.25rem', fontSize: '0.95rem' }}>
               {user?.role} · {user?.region} {user?.department && `· ${user.department} Department`}
             </p>
-            <div style={{ 
-              display: 'flex', 
-              gap: '1rem', 
-              marginTop: '0.75rem', 
-              flexWrap: 'wrap'
-            }}>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '0.25rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-                {stats.totalProjects} Projects
-              </span>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '0.25rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-                {DEVELOPMENT_PROJECTS.filter(p => p.status === 'In Progress').length} In Progress
-              </span>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '0.25rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-                {stats.delayedProjects} Delayed
-              </span>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '0.25rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem' }}>
-                {stats.totalVoters.toLocaleString()} Voters
-              </span>
-            </div>
+            
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 1 }}>
             <div style={{
